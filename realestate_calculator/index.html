@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房地产投资计算器</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>房地产投资计算器</h1>
+            <p class="subtitle">评估房地产投资的现金流、资本增值和税务影响</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Profile管理 -->
+            <div class="profile-section">
+                <h2>投资方案管理</h2>
+                <div class="profile-controls">
+                    <div class="profile-selector">
+                        <label for="profileSelect">当前方案:</label>
+                        <select id="profileSelect">
+                            <option value="default">默认方案</option>
+                        </select>
+                    </div>
+                    <div class="profile-actions">
+                        <button id="newProfileBtn" class="profile-btn">新建方案</button>
+                        <button id="saveProfileBtn" class="profile-btn">保存方案</button>
+                        <button id="deleteProfileBtn" class="profile-btn delete-btn">删除方案</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 输入表单 -->
+            <div class="input-section">
+                <h2>投资信息输入</h2>
+                
+                <!-- 房产信息 -->
+                <div class="form-group">
+                    <h3>房产信息</h3>
+                    <div class="input-row">
+                        <label for="purchasePrice">购买价格 (AUD)</label>
+                        <input type="number" id="purchasePrice" placeholder="例如: 800000">
+                    </div>
+                    <div class="input-row">
+                        <label for="purchaseCosts">购买成本 (AUD)</label>
+                        <input type="number" id="purchaseCosts" placeholder="例如: 40000">
+                    </div>
+                    <div class="input-row">
+                        <label for="weeklyRent">每周租金 (AUD)</label>
+                        <input type="number" id="weeklyRent" placeholder="例如: 600">
+                    </div>
+                    <div class="input-row">
+                        <label for="rentalGrowthRate">年度租金增长率 (%)</label>
+                        <input type="number" id="rentalGrowthRate" step="0.1" placeholder="例如: 3.0">
+                    </div>
+                    <div class="input-row">
+                        <label for="propertyType">房产类型</label>
+                        <select id="propertyType">
+                            <option value="house">独立屋</option>
+                            <option value="apartment">公寓</option>
+                            <option value="townhouse">联排别墅</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label for="yearBuilt">建造年份</label>
+                        <input type="number" id="yearBuilt" placeholder="例如: 2010">
+                    </div>
+                </div>
+
+                <!-- 贷款信息 -->
+                <div class="form-group">
+                    <h3>贷款信息</h3>
+                    <div class="input-row">
+                        <label for="loanAmount">贷款金额 (AUD)</label>
+                        <input type="number" id="loanAmount" placeholder="例如: 640000">
+                    </div>
+                    <div class="input-row">
+                        <label for="interestRate">年利率 (%)</label>
+                        <input type="number" id="interestRate" step="0.01" placeholder="例如: 6.5">
+                    </div>
+                    <div class="input-row">
+                        <label for="loanTerm">贷款期限 (年)</label>
+                        <input type="number" id="loanTerm" placeholder="例如: 30">
+                    </div>
+                    <div class="input-row">
+                        <label for="repaymentType">还款类型</label>
+                        <select id="repaymentType">
+                            <option value="principal_interest">本息同还</option>
+                            <option value="interest_only">只付利息</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 运营费用 -->
+                <div class="form-group">
+                    <h3>年度运营费用</h3>
+                    <div class="input-row">
+                        <label for="strataFees">物业管理费 (AUD)</label>
+                        <input type="number" id="strataFees" placeholder="例如: 3000">
+                    </div>
+                    <div class="input-row">
+                        <label for="councilRates">市政费 (AUD)</label>
+                        <input type="number" id="councilRates" placeholder="例如: 2000">
+                    </div>
+                    <div class="input-row">
+                        <label for="waterRates">水费 (AUD)</label>
+                        <input type="number" id="waterRates" placeholder="例如: 800">
+                    </div>
+                    <div class="input-row">
+                        <label for="insurance">保险费 (AUD)</label>
+                        <input type="number" id="insurance" placeholder="例如: 1200">
+                    </div>
+                    <div class="input-row">
+                        <label for="maintenance">维护维修费 (AUD)</label>
+                        <input type="number" id="maintenance" placeholder="例如: 2000">
+                    </div>
+                    <div class="input-row">
+                        <label for="managementFees">中介管理费 (%)</label>
+                        <input type="number" id="managementFees" step="0.1" placeholder="例如: 7.0">
+                    </div>
+                </div>
+
+                <!-- 个人税务信息 -->
+                <div class="form-group">
+                    <h3>个人税务信息</h3>
+                    <div class="input-row">
+                        <label for="personalIncome">年收入 (AUD)</label>
+                        <input type="number" id="personalIncome" placeholder="例如: 120000">
+                    </div>
+                    <div class="input-row">
+                        <label for="otherDeductions">其他税务抵扣 (AUD)</label>
+                        <input type="number" id="otherDeductions" placeholder="例如: 5000">
+                    </div>
+                </div>
+
+                <!-- 投资假设 -->
+                <div class="form-group">
+                    <h3>投资假设</h3>
+                    <div class="input-row">
+                        <label for="capitalGrowthRate">年度资本增值率 (%)</label>
+                        <input type="number" id="capitalGrowthRate" step="0.1" placeholder="例如: 5.0">
+                    </div>
+                    <div class="input-row">
+                        <label for="holdingPeriod">持有年限</label>
+                        <input type="number" id="holdingPeriod" placeholder="例如: 10">
+                    </div>
+                </div>
+
+                <button id="calculateBtn" class="calculate-btn">计算投资回报</button>
+            </div>
+
+            <!-- 结果显示 -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2>投资分析报告</h2>
+                
+                <!-- 概览 -->
+                <div class="result-group">
+                    <h3>投资概览</h3>
+                    <div class="overview-grid">
+                        <div class="overview-item">
+                            <span class="label">初始投资总额</span>
+                            <span class="value" id="totalInitialInvestment">-</span>
+                        </div>
+                        <div class="overview-item">
+                            <span class="label">预计持有年限</span>
+                            <span class="value" id="displayHoldingPeriod">-</span>
+                        </div>
+                        <div class="overview-item">
+                            <span class="label">预计出售时房产价值</span>
+                            <span class="value" id="futurePropertyValue">-</span>
+                        </div>
+                        <div class="overview-item">
+                            <span class="label">毛租金收益率</span>
+                            <span class="value" id="grossRentalYield">-</span>
+                        </div>
+                        <div class="overview-item">
+                            <span class="label">净租金收益率</span>
+                            <span class="value" id="netRentalYield">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 现金流图表 -->
+                <div class="result-group">
+                    <h3>年度现金流分析</h3>
+                    <canvas id="cashFlowChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- 投资回报分析 -->
+                <div class="result-group">
+                    <h3>投资回报分析</h3>
+                    <div class="return-grid">
+                        <div class="return-item">
+                            <span class="label">总资本增值</span>
+                            <span class="value" id="totalCapitalGrowth">-</span>
+                        </div>
+                        <div class="return-item">
+                            <span class="label">累计租金收入</span>
+                            <span class="value" id="totalRentalIncome">-</span>
+                        </div>
+                        <div class="return-item">
+                            <span class="label">累计税务优惠</span>
+                            <span class="value" id="totalTaxBenefits">-</span>
+                        </div>
+                        <div class="return-item">
+                            <span class="label">税后总回报</span>
+                            <span class="value" id="totalAfterTaxReturn">-</span>
+                        </div>
+                        <div class="return-item">
+                            <span class="label">年化回报率 (IRR)</span>
+                            <span class="value" id="irr">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 税务总结 -->
+                <div class="result-group">
+                    <h3>税务总结</h3>
+                    <div class="tax-summary">
+                        <div class="tax-item">
+                            <span class="label">累计可抵扣费用</span>
+                            <span class="value" id="totalDeductions">-</span>
+                        </div>
+                        <div class="tax-item">
+                            <span class="label">预计资本利得税 (CGT)</span>
+                            <span class="value" id="capitalGainsTax">-</span>
+                        </div>
+                        <div class="tax-item">
+                            <span class="label">CGT折扣适用</span>
+                            <span class="value" id="cgtDiscountApplicable">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 出售时机建议 -->
+                <div class="result-group">
+                    <h3>出售时机建议</h3>
+                    <div id="sellingRecommendation" class="recommendation">
+                        <!-- 动态生成建议内容 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="disclaimer">
+                <h4>免责声明</h4>
+                <p>本计算器提供的所有计算均基于用户输入的假设和预测，仅供参考。实际结果可能因市场波动、政策变化等因素而有所不同。本工具不构成专业的税务或投资建议，用户在做出任何投资决策前应咨询合格的专业顾问。</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="calculator.js"></script>
+</body>
+</html>
