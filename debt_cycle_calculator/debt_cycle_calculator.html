@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="page-title">债务循环投资计算器</title>
+    <title data-i18n="page-title">Debt Recycling Investment Calculator</title>
     <style>
         * {
             margin: 0;
@@ -371,8 +371,8 @@
                     <option value="zh">中文</option>
                 </select>
             </div>
-            <h1 data-i18n="main-title">🏠 债务循环投资计算器</h1>
-            <p data-i18n="main-subtitle">比较 Offset 账户 vs 债务循环投资策略的收益差异</p>
+            <h1 data-i18n="main-title">🏠 Debt Recycling Investment Calculator</h1>
+            <p data-i18n="main-subtitle">Compare Offset Account vs Debt Recycling Investment Strategy Returns</p>
         </div>
 
         <div class="main-content">
@@ -380,7 +380,7 @@
                 <form id="calculatorForm">
                     <div class="form-group">
                         <label for="availableFunds">
-                            <span data-i18n="available-funds">可用资金</span> (AUD)
+                            <span data-i18n="available-funds">Available Funds</span> (AUD)
                             <span class="info-tooltip" data-tooltip-key="available-funds-tooltip">ℹ️</span>
                         </label>
                         <input type="number" id="availableFunds" value="500000" min="0" step="1000">
@@ -388,7 +388,7 @@
 
                     <div class="form-group">
                         <label for="mortgageRate">
-                            <span data-i18n="mortgage-rate">房贷利率</span> (%)
+                            <span data-i18n="mortgage-rate">Mortgage Rate</span> (%)
                             <span class="info-tooltip" data-tooltip-key="mortgage-rate-tooltip">ℹ️</span>
                         </label>
                         <input type="number" id="mortgageRate" value="5.5" min="0" max="20" step="0.1">
@@ -396,7 +396,7 @@
 
                     <div class="form-group">
                         <label for="taxRate">
-                            <span data-i18n="tax-rate">边际税率</span> (%)
+                            <span data-i18n="tax-rate">Marginal Tax Rate</span> (%)
                             <span class="info-tooltip" data-tooltip-key="tax-rate-tooltip">ℹ️</span>
                         </label>
                         <input type="number" id="taxRate" value="47" min="0" max="100" step="0.5">
@@ -404,7 +404,7 @@
 
                     <div class="form-group">
                         <label for="investmentReturn">
-                            <span data-i18n="investment-return">预期投资年回报率</span> (%)
+                            <span data-i18n="investment-return">Expected Annual Investment Return</span> (%)
                             <span class="info-tooltip" data-tooltip-key="investment-return-tooltip">ℹ️</span>
                         </label>
                         <input type="number" id="investmentReturn" value="8" min="0" max="30" step="0.1">
@@ -412,33 +412,33 @@
 
                     <div class="form-group">
                         <label for="timeHorizon">
-                            <span data-i18n="time-horizon">投资时间</span> (<span data-i18n="years">年</span>)
+                            <span data-i18n="time-horizon">Investment Period</span> (<span data-i18n="years">years</span>)
                             <span class="info-tooltip" data-tooltip-key="time-horizon-tooltip">ℹ️</span>
                         </label>
                         <input type="number" id="timeHorizon" value="1" min="1" max="30" step="1">
                     </div>
 
                     <button type="submit" class="calculate-btn">
-                        <span data-i18n="calculate-btn">🧮 计算收益对比</span>
+                        <span data-i18n="calculate-btn">🧮 Calculate Returns Comparison</span>
                     </button>
                 </form>
             </div>
 
             <div class="results-section">
-                <h2 class="results-title" data-i18n="results-title">📊 收益对比分析</h2>
+                <h2 class="results-title" data-i18n="results-title">📊 Returns Comparison Analysis</h2>
                 
                 <div id="results" class="hidden">
                     <div class="comparison-cards">
                         <div class="result-card offset">
-                            <h3 data-i18n="offset-strategy">💰 Offset 账户策略</h3>
+                            <h3 data-i18n="offset-strategy">💰 Offset Account Strategy</h3>
                             <div class="result-value" id="offsetReturn">$0</div>
-                            <div class="result-subtitle" data-i18n="annual-return">年税后收益</div>
+                            <div class="result-subtitle" data-i18n="annual-return">Annual After-Tax Return</div>
                         </div>
 
                         <div class="result-card debt-cycle">
-                            <h3 data-i18n="debt-cycle-strategy">📈 债务循环投资策略</h3>
+                            <h3 data-i18n="debt-cycle-strategy">📈 Debt Recycling Investment Strategy</h3>
                             <div class="result-value" id="debtCycleReturn">$0</div>
-                            <div class="result-subtitle" data-i18n="annual-return">年税后收益</div>
+                            <div class="result-subtitle" data-i18n="annual-return">Annual After-Tax Return</div>
                         </div>
                     </div>
 
@@ -446,40 +446,40 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th data-i18n="strategy">策略</th>
-                                    <th data-i18n="annual-income">年收益</th>
-                                    <th data-i18n="risk-level">风险等级</th>
-                                    <th data-i18n="advantages">优势</th>
+                                    <th data-i18n="strategy">Strategy</th>
+                                    <th data-i18n="annual-income">Annual Return</th>
+                                    <th data-i18n="risk-level">Risk Level</th>
+                                    <th data-i18n="advantages">Advantages</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong data-i18n="offset-account">Offset 账户</strong></td>
+                                    <td><strong data-i18n="offset-account">Offset Account</strong></td>
                                     <td id="offsetTableReturn">$0</td>
-                                    <td data-i18n="no-risk">🟢 无风险</td>
-                                    <td data-i18n="stable-certain">稳定、确定</td>
+                                    <td data-i18n="no-risk">🟢 No Risk</td>
+                                    <td data-i18n="stable-certain">Stable & Certain</td>
                                 </tr>
                                 <tr>
-                                    <td><strong data-i18n="debt-cycle-investment">债务循环投资</strong></td>
+                                    <td><strong data-i18n="debt-cycle-investment">Debt Recycling Investment</strong></td>
                                     <td id="debtCycleTableReturn">$0</td>
-                                    <td data-i18n="medium-risk">🟡 中等风险</td>
-                                    <td data-i18n="tax-optimization">税务优化、长期增长</td>
+                                    <td data-i18n="medium-risk">🟡 Medium Risk</td>
+                                    <td data-i18n="tax-optimization">Tax Optimization & Long-term Growth</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="breakeven-info">
-                        <h4 data-i18n="breakeven-title">🎯 债务循环盈亏平衡点</h4>
-                        <div data-i18n="breakeven-text1">投资回报率需要达到</div>
+                        <h4 data-i18n="breakeven-title">🎯 Debt Recycling Break-even Point</h4>
+                        <div data-i18n="breakeven-text1">Investment return rate needs to reach</div>
                         <div class="breakeven-value" id="breakevenRate">0%</div>
-                        <div data-i18n="breakeven-text2">才能超越 Offset 账户收益</div>
+                        <div data-i18n="breakeven-text2">to outperform Offset Account returns</div>
                     </div>
                 </div>
 
                 <div id="placeholder" class="comparison-table">
                     <p style="text-align: center; color: #6c757d; font-style: italic; padding: 40px;" data-i18n="placeholder-text">
-                        请填写左侧参数并点击计算按钮查看结果
+                        Please fill in the parameters on the left and click calculate to view results
                     </p>
                 </div>
             </div>
