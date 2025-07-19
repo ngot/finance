@@ -19,6 +19,7 @@ class PropertyInvestmentCalculator {
         document.getElementById('newProfileBtn').addEventListener('click', () => this.createNewProfile());
         document.getElementById('saveProfileBtn').addEventListener('click', () => this.saveCurrentProfile());
         document.getElementById('deleteProfileBtn').addEventListener('click', () => this.deleteCurrentProfile());
+        document.getElementById('loadExampleBtn').addEventListener('click', () => this.loadExampleData());
 
         // 添加输入验证和自动保存
         this.addInputValidation();
@@ -31,10 +32,35 @@ class PropertyInvestmentCalculator {
         if (saved) {
             return JSON.parse(saved);
         }
+        
+        // 默认方案包含示例数据
+        const defaultData = {
+            purchasePrice: 800000,
+            purchaseCosts: 40000,
+            weeklyRent: 600,
+            rentalGrowthRate: 3.0,
+            propertyType: 'apartment',
+            yearBuilt: 2015,
+            loanAmount: 640000,
+            interestRate: 6.5,
+            loanTerm: 30,
+            repaymentType: 'interest_only',
+            strataFees: 3000,
+            councilRates: 2000,
+            waterRates: 800,
+            insurance: 1200,
+            maintenance: 2000,
+            managementFees: 7.0,
+            personalIncome: 120000,
+            otherDeductions: 5000,
+            capitalGrowthRate: 5.0,
+            holdingPeriod: 10
+        };
+        
         return {
             'default': {
-                name: '默认方案',
-                data: {}
+                name: '默认方案 (示例数据)',
+                data: defaultData
             }
         };
     }
@@ -141,6 +167,45 @@ class PropertyInvestmentCalculator {
                 this.saveProfiles();
             });
         });
+    }
+
+    loadExampleData() {
+        const exampleData = {
+            purchasePrice: 800000,
+            purchaseCosts: 40000,
+            weeklyRent: 600,
+            rentalGrowthRate: 3.0,
+            propertyType: 'apartment',
+            yearBuilt: 2015,
+            loanAmount: 640000,
+            interestRate: 6.5,
+            loanTerm: 30,
+            repaymentType: 'interest_only',
+            strataFees: 3000,
+            councilRates: 2000,
+            waterRates: 800,
+            insurance: 1200,
+            maintenance: 2000,
+            managementFees: 7.0,
+            personalIncome: 120000,
+            otherDeductions: 5000,
+            capitalGrowthRate: 5.0,
+            holdingPeriod: 10
+        };
+        
+        Object.keys(exampleData).forEach(key => {
+            const element = document.getElementById(key);
+            if (element) {
+                element.value = exampleData[key];
+            }
+        });
+        
+        // 保存到当前profile
+        this.saveCurrentProfileData();
+        this.saveProfiles();
+        
+        // 显示加载成功提示
+        this.showNotification('示例数据已加载到当前方案', 'success');
     }
 
     showNotification(message, type = 'info') {
@@ -692,7 +757,7 @@ class PropertyInvestmentCalculator {
 
 // 初始化计算器
 document.addEventListener('DOMContentLoaded', () => {
-    new PropertyInvestmentCalculator();
+    window.calculator = new PropertyInvestmentCalculator();
 });
 
 // 添加一些示例数据填充功能
@@ -702,10 +767,12 @@ function loadExampleData() {
         purchaseCosts: 40000,
         weeklyRent: 600,
         rentalGrowthRate: 3.0,
+        propertyType: 'apartment',
         yearBuilt: 2015,
         loanAmount: 640000,
         interestRate: 6.5,
         loanTerm: 30,
+        repaymentType: 'interest_only',
         strataFees: 3000,
         councilRates: 2000,
         waterRates: 800,
@@ -713,6 +780,7 @@ function loadExampleData() {
         maintenance: 2000,
         managementFees: 7.0,
         personalIncome: 120000,
+        otherDeductions: 5000,
         capitalGrowthRate: 5.0,
         holdingPeriod: 10
     };
@@ -723,7 +791,12 @@ function loadExampleData() {
             element.value = exampleData[key];
         }
     });
+    
+    // 显示加载成功提示
+    if (window.calculator) {
+        window.calculator.showNotification('示例数据已加载', 'success');
+    }
 }
 
 // 在控制台中提供示例数据加载功能
-console.log('提示：在控制台中输入 loadExampleData() 可以加载示例数据进行测试');
+console.log('提示：默认方案已包含示例数据，或在控制台中输入 loadExampleData() 重新加载示例数据');
