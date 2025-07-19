@@ -1,204 +1,209 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>房地产投资计算器</title>
+    <title>Property Investment Calculator</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="languages.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>房地产投资计算器</h1>
-            <p class="subtitle">评估房地产投资的现金流、资本增值和税务影响</p>
+            <div class="language-selector">
+                <button id="langEn" class="lang-btn active">English</button>
+                <button id="langZh" class="lang-btn">中文</button>
+            </div>
+            <h1 data-i18n="title">Property Investment Calculator</h1>
+            <p class="subtitle" data-i18n="subtitle">Evaluate cash flow, capital growth and tax implications of property investments</p>
         </header>
 
-        <!-- Profile管理 -->
+        <!-- Profile Management -->
         <div class="profile-section">
-            <h2>投资方案管理</h2>
+            <h2 data-i18n="profile_management">Investment Portfolio Management</h2>
             <div class="profile-controls">
                 <div class="profile-selector">
-                    <label for="profileSelect">当前方案:</label>
+                    <label for="profileSelect" data-i18n="current_profile">Current Profile:</label>
                     <select id="profileSelect">
-                        <option value="default">默认方案</option>
+                        <option value="default" data-i18n="default_profile">Default Profile</option>
                     </select>
                 </div>
                 <div class="profile-actions">
-                    <button id="newProfileBtn" class="profile-btn">新建方案</button>
-                    <button id="saveProfileBtn" class="profile-btn">保存方案</button>
-                    <button id="deleteProfileBtn" class="profile-btn delete-btn">删除方案</button>
-                    <button id="loadExampleBtn" class="profile-btn example-btn">加载示例</button>
-                    <button id="exportBtn" class="profile-btn export-btn">导出数据</button>
-                    <button id="importBtn" class="profile-btn import-btn">导入数据</button>
+                    <button id="newProfileBtn" class="profile-btn" data-i18n="new_profile">New Profile</button>
+                    <button id="saveProfileBtn" class="profile-btn" data-i18n="save_profile">Save Profile</button>
+                    <button id="deleteProfileBtn" class="profile-btn delete-btn" data-i18n="delete_profile">Delete Profile</button>
+                    <button id="loadExampleBtn" class="profile-btn example-btn" data-i18n="load_example">Load Example</button>
+                    <button id="exportBtn" class="profile-btn export-btn" data-i18n="export_data">Export Data</button>
+                    <button id="importBtn" class="profile-btn import-btn" data-i18n="import_data">Import Data</button>
                 </div>
                 <input type="file" id="importFileInput" accept=".json" style="display: none;">
             </div>
         </div>
 
-        <!-- 输入表单 -->
+        <!-- Input Form -->
         <div class="input-section">
-            <h2>投资信息输入</h2>
+            <h2 data-i18n="investment_info_input">Investment Information Input</h2>
             
-            <!-- 房产信息 -->
+            <!-- Property Information -->
             <div class="form-group">
-                <h3>房产信息</h3>
+                <h3 data-i18n="property_info">Property Information</h3>
                 <div class="input-row">
-                    <label for="purchasePrice">购买价格 (AUD)</label>
-                    <input type="number" id="purchasePrice" placeholder="例如: 800000">
+                    <label for="purchasePrice" data-i18n="purchase_price">Purchase Price (AUD)</label>
+                    <input type="number" id="purchasePrice" data-i18n-placeholder="purchase_price_placeholder" placeholder="e.g.: 800000">
                 </div>
                 <div class="input-row">
-                    <label for="purchaseCosts">购买成本 (AUD)</label>
-                    <input type="number" id="purchaseCosts" placeholder="例如: 40000">
+                    <label for="purchaseCosts" data-i18n="purchase_costs">Purchase Costs (AUD)</label>
+                    <input type="number" id="purchaseCosts" data-i18n-placeholder="purchase_costs_placeholder" placeholder="e.g.: 40000">
                 </div>
                 <div class="input-row">
-                    <label for="weeklyRent">每周租金 (AUD)</label>
-                    <input type="number" id="weeklyRent" placeholder="例如: 600">
+                    <label for="weeklyRent" data-i18n="weekly_rent">Weekly Rent (AUD)</label>
+                    <input type="number" id="weeklyRent" data-i18n-placeholder="weekly_rent_placeholder" placeholder="e.g.: 600">
                 </div>
                 <div class="input-row">
-                    <label for="rentalGrowthRate">年度租金增长率 (%)</label>
-                    <input type="number" id="rentalGrowthRate" step="0.1" placeholder="例如: 3.0">
+                    <label for="rentalGrowthRate" data-i18n="rental_growth_rate">Annual Rental Growth Rate (%)</label>
+                    <input type="number" id="rentalGrowthRate" step="0.1" data-i18n-placeholder="rental_growth_rate_placeholder" placeholder="e.g.: 3.0">
                 </div>
                 <div class="input-row">
-                    <label for="propertyType">房产类型</label>
+                    <label for="propertyType" data-i18n="property_type">Property Type</label>
                     <select id="propertyType">
-                        <option value="house">独立屋</option>
-                        <option value="apartment">公寓</option>
-                        <option value="townhouse">联排别墅</option>
+                        <option value="house" data-i18n="house">House</option>
+                        <option value="apartment" data-i18n="apartment">Apartment</option>
+                        <option value="townhouse" data-i18n="townhouse">Townhouse</option>
                     </select>
                 </div>
             </div>
 
-            <!-- 贷款信息 -->
+            <!-- Loan Information -->
             <div class="form-group">
-                <h3>贷款信息</h3>
+                <h3 data-i18n="loan_info">Loan Information</h3>
                 <div class="input-row">
-                    <label for="loanAmount">贷款金额 (AUD)</label>
-                    <input type="number" id="loanAmount" placeholder="例如: 640000">
+                    <label for="loanAmount" data-i18n="loan_amount">Loan Amount (AUD)</label>
+                    <input type="number" id="loanAmount" data-i18n-placeholder="loan_amount_placeholder" placeholder="e.g.: 640000">
                 </div>
                 <div class="input-row">
-                    <label for="interestRate">年利率 (%)</label>
-                    <input type="number" id="interestRate" step="0.01" placeholder="例如: 6.5">
+                    <label for="interestRate" data-i18n="interest_rate">Interest Rate (%)</label>
+                    <input type="number" id="interestRate" step="0.01" data-i18n-placeholder="interest_rate_placeholder" placeholder="e.g.: 6.5">
                 </div>
                 <div class="input-row">
-                    <label for="loanTerm">贷款期限 (年)</label>
-                    <input type="number" id="loanTerm" placeholder="例如: 30">
+                    <label for="loanTerm" data-i18n="loan_term">Loan Term (Years)</label>
+                    <input type="number" id="loanTerm" data-i18n-placeholder="loan_term_placeholder" placeholder="e.g.: 30">
                 </div>
                 <div class="input-row">
-                    <label for="repaymentType">还款类型</label>
+                    <label for="repaymentType" data-i18n="repayment_type">Repayment Type</label>
                     <select id="repaymentType">
-                        <option value="principal_interest">本息同还</option>
-                        <option value="interest_only">只付利息</option>
+                        <option value="principal_interest" data-i18n="principal_interest">Principal & Interest</option>
+                        <option value="interest_only" data-i18n="interest_only">Interest Only</option>
                     </select>
                 </div>
             </div>
 
-            <!-- 运营费用 -->
+            <!-- Operating Expenses -->
             <div class="form-group">
-                <h3>年度运营费用</h3>
+                <h3 data-i18n="operating_expenses">Operating Expenses</h3>
                 <div class="input-row">
-                    <label for="strataFees">物业管理费 (AUD)</label>
-                    <input type="number" id="strataFees" placeholder="例如: 3000">
+                    <label for="strataFees" data-i18n="strata_fees">Annual Strata Fees (AUD)</label>
+                    <input type="number" id="strataFees" data-i18n-placeholder="strata_fees_placeholder" placeholder="e.g.: 3000">
                 </div>
                 <div class="input-row">
-                    <label for="councilRates">市政费 (AUD)</label>
-                    <input type="number" id="councilRates" placeholder="例如: 2000">
+                    <label for="councilRates" data-i18n="council_rates">Annual Council Rates (AUD)</label>
+                    <input type="number" id="councilRates" data-i18n-placeholder="council_rates_placeholder" placeholder="e.g.: 2000">
                 </div>
                 <div class="input-row">
-                    <label for="waterRates">水费 (AUD)</label>
-                    <input type="number" id="waterRates" placeholder="例如: 800">
+                    <label for="waterRates" data-i18n="water_rates">Annual Water Rates (AUD)</label>
+                    <input type="number" id="waterRates" data-i18n-placeholder="water_rates_placeholder" placeholder="e.g.: 800">
                 </div>
                 <div class="input-row">
-                    <label for="insurance">保险费 (AUD)</label>
-                    <input type="number" id="insurance" placeholder="例如: 1200">
+                    <label for="insurance" data-i18n="insurance">Annual Insurance (AUD)</label>
+                    <input type="number" id="insurance" data-i18n-placeholder="insurance_placeholder" placeholder="e.g.: 1200">
                 </div>
                 <div class="input-row">
-                    <label for="maintenance">维护维修费 (AUD)</label>
-                    <input type="number" id="maintenance" placeholder="例如: 2000">
+                    <label for="maintenance" data-i18n="maintenance">Annual Maintenance & Repairs (AUD)</label>
+                    <input type="number" id="maintenance" data-i18n-placeholder="maintenance_placeholder" placeholder="e.g.: 2000">
                 </div>
                 <div class="input-row">
-                    <label for="managementFees">中介管理费 (%)</label>
-                    <input type="number" id="managementFees" step="0.1" placeholder="例如: 7.0">
+                    <label for="managementFees" data-i18n="management_fees">Property Management Fees (%)</label>
+                    <input type="number" id="managementFees" step="0.1" data-i18n-placeholder="management_fees_placeholder" placeholder="e.g.: 7.0">
                 </div>
             </div>
 
-            <!-- 个人税务信息 -->
+            <!-- Personal Tax Information -->
             <div class="form-group">
-                <h3>个人税务信息</h3>
+                <h3 data-i18n="personal_tax_info">Personal Tax Information</h3>
                 <div class="input-row">
-                    <label for="personalIncome">年收入 (AUD)</label>
-                    <input type="number" id="personalIncome" placeholder="例如: 120000">
+                    <label for="personalIncome" data-i18n="personal_income">Annual Personal Income (AUD)</label>
+                    <input type="number" id="personalIncome" data-i18n-placeholder="personal_income_placeholder" placeholder="e.g.: 120000">
                 </div>
                 <div class="input-row">
-                    <label for="otherDeductions">其他税务抵扣 (AUD)</label>
-                    <input type="number" id="otherDeductions" placeholder="例如: 5000">
+                    <label for="otherDeductions" data-i18n="other_deductions">Other Tax Deductions (AUD)</label>
+                    <input type="number" id="otherDeductions" data-i18n-placeholder="other_deductions_placeholder" placeholder="e.g.: 5000">
                 </div>
             </div>
 
-            <!-- 投资假设 -->
+            <!-- Investment Assumptions -->
             <div class="form-group">
-                <h3>投资假设</h3>
+                <h3 data-i18n="investment_assumptions">Investment Assumptions</h3>
                 <div class="input-row">
-                    <label for="capitalGrowthRate">年度资本增值率 (%)</label>
-                    <input type="number" id="capitalGrowthRate" step="0.1" placeholder="例如: 5.0">
+                    <label for="capitalGrowthRate" data-i18n="capital_growth_rate">Annual Capital Growth Rate (%)</label>
+                    <input type="number" id="capitalGrowthRate" step="0.1" data-i18n-placeholder="capital_growth_rate_placeholder" placeholder="e.g.: 5.0">
                 </div>
                 <div class="input-row">
-                    <label for="holdingPeriod">持有年限</label>
-                    <input type="number" id="holdingPeriod" placeholder="例如: 10">
+                    <label for="holdingPeriod" data-i18n="holding_period">Holding Period (Years)</label>
+                    <input type="number" id="holdingPeriod" data-i18n-placeholder="holding_period_placeholder" placeholder="e.g.: 10">
                 </div>
             </div>
 
-            <button id="calculateBtn" class="calculate-btn">计算投资回报</button>
+            <button id="calculateBtn" class="calculate-btn" data-i18n="calculate_investment">Calculate Investment Returns</button>
         </div>
 
-        <!-- 结果显示区域 -->
+        <!-- Results Display Area -->
         <div class="results-section" id="resultsSection" style="display: none;">
-            <h2>投资分析报告</h2>
+            <h2 data-i18n="results_title">Investment Analysis Report</h2>
             
-            <!-- 概览 -->
+            <!-- Overview -->
             <div class="result-group">
-                <h3>投资概览</h3>
+                <h3 data-i18n="investment_overview">Investment Overview</h3>
                 <div class="overview-grid">
                     <div class="overview-item clickable-item" onclick="openInitialInvestmentModal()">
                         <div class="item-content">
-                            <span class="label">初始投资总额</span>
+                            <span class="label" data-i18n="initial_investment">Total Initial Investment</span>
                             <span class="value" id="totalInitialInvestment">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
                     </div>
                     <div class="overview-item">
-                        <span class="label">预计持有年限</span>
+                        <span class="label" data-i18n="expected_holding_period">Expected Holding Period</span>
                         <span class="value" id="displayHoldingPeriod">-</span>
                     </div>
                     <div class="overview-item">
-                        <span class="label">预计出售时房产价值</span>
+                        <span class="label" data-i18n="expected_property_value">Expected Property Value at Sale</span>
                         <span class="value" id="futurePropertyValue">-</span>
                     </div>
                     <div class="overview-item">
-                        <span class="label">毛租金收益率</span>
+                        <span class="label" data-i18n="gross_rental_yield">Gross Rental Yield</span>
                         <span class="value" id="grossRentalYield">-</span>
                     </div>
                     <div class="overview-item">
-                        <span class="label">净租金收益率</span>
+                        <span class="label" data-i18n="net_rental_yield">Net Rental Yield</span>
                         <span class="value" id="netRentalYield">-</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 投资回报分析 -->
+            <!-- Investment Return Analysis -->
             <div class="result-group">
-                <h3>投资回报分析</h3>
+                <h3 data-i18n="return_analysis">Investment Return Analysis</h3>
                 <div class="return-grid">
                     <div class="return-item clickable-item" onclick="openCapitalGrowthModal()">
                         <div class="item-content">
-                            <span class="label">总资本增值</span>
+                            <span class="label" data-i18n="capital_growth">Total Capital Growth</span>
                             <span class="value" id="totalCapitalGrowth">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
                     </div>
                     <div class="return-item clickable-item" onclick="openRentalIncomeModal()">
                         <div class="item-content">
-                            <span class="label">累计租金收入</span>
+                            <span class="label" data-i18n="total_rental_income">Total Rental Income</span>
                             <span class="value" id="totalRentalIncome">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
@@ -206,7 +211,7 @@
                     <div class="return-item tax-benefits-item">
                         <div class="tax-benefits-header" onclick="openTaxBenefitsModal()">
                             <div class="tax-benefits-main">
-                                <span class="label">累计税务优惠</span>
+                                <span class="label" data-i18n="total_tax_benefits">Total Tax Benefits</span>
                                 <span class="value" id="totalTaxBenefits">-</span>
                             </div>
                             <span class="detail-icon">🔍</span>
@@ -214,14 +219,14 @@
                     </div>
                     <div class="return-item clickable-item" onclick="openAfterTaxReturnModal()">
                         <div class="item-content">
-                            <span class="label">税后总回报</span>
+                            <span class="label" data-i18n="total_return">Total After-Tax Return</span>
                             <span class="value" id="totalAfterTaxReturn">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
                     </div>
                     <div class="return-item clickable-item" onclick="openIrrModal()">
                         <div class="item-content">
-                            <span class="label">年化回报率 (IRR)</span>
+                            <span class="label" data-i18n="irr">Internal Rate of Return (IRR)</span>
                             <span class="value" id="irr">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
@@ -229,128 +234,128 @@
                 </div>
             </div>
 
-            <!-- 税务总结 -->
+            <!-- Tax Summary -->
             <div class="result-group">
-                <h3>税务总结</h3>
+                <h3 data-i18n="tax_summary">Tax Summary</h3>
                 <div class="tax-summary">
                     <div class="tax-item clickable-item" onclick="openTotalDeductionsModal()">
                         <div class="item-content">
-                            <span class="label">累计可抵扣费用</span>
+                            <span class="label" data-i18n="total_deductions">Total Tax Deductions</span>
                             <span class="value" id="totalDeductions">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
                     </div>
                     <div class="tax-item clickable-item" onclick="openCgtModal()">
                         <div class="item-content">
-                            <span class="label">预计资本利得税 (CGT)</span>
+                            <span class="label" data-i18n="cgt_payable">Capital Gains Tax Payable</span>
                             <span class="value" id="capitalGainsTax">-</span>
                         </div>
                         <span class="detail-icon">🔍</span>
                     </div>
                     <div class="tax-item">
-                        <span class="label">CGT折扣适用</span>
+                        <span class="label" data-i18n="cgt_discount">CGT 50% Discount Applied</span>
                         <span class="value" id="cgtDiscountApplicable">-</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 出售时机建议 -->
+            <!-- Selling Time Recommendations -->
             <div class="result-group">
-                <h3>出售时机建议</h3>
+                <h3 data-i18n="selling_recommendations">Selling Time Recommendations</h3>
                 <div id="sellingRecommendation" class="recommendation">
-                    <!-- 动态生成建议内容 -->
+                    <!-- Dynamically generated recommendation content -->
                 </div>
             </div>
 
             <!-- 现金流图表 - 移到最下面 -->
             <div class="result-group chart-section">
-                <h3>年度现金流分析图表</h3>
+                <h3 data-i18n="cash_flow_chart_title">Annual Cash Flow Analysis Chart</h3>
                 <div class="chart-container">
                     <canvas id="cashFlowChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- 税务优惠详情弹窗 -->
+        <!-- Tax Benefits Details Modal -->
         <div id="taxBenefitsModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>税务优惠详细分析</h3>
+                    <h3 data-i18n="tax_benefits_detailed_analysis">Tax Benefits Detailed Analysis</h3>
                     <span class="close-btn" onclick="closeTaxBenefitsModal()">&times;</span>
                 </div>
                 <div class="modal-body">
                     <div class="modal-summary">
                         <div class="summary-card">
-                            <h4>累计税务优惠总额</h4>
+                            <h4 data-i18n="total_tax_benefits_amount">Total Tax Benefits Amount</h4>
                             <div class="summary-amount" id="modalTotalBenefits">-</div>
                             <div class="summary-details">
-                                <span>受益年数: <strong id="modalBenefitYears">-</strong></span>
-                                <span>边际税率: <strong id="modalTaxRate">-</strong></span>
+                                <span><span data-i18n="benefit_years">Benefit Years</span>: <strong id="modalBenefitYears">-</strong></span>
+                                <span><span data-i18n="marginal_tax_rate">Marginal Tax Rate</span>: <strong id="modalTaxRate">-</strong></span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="modal-tabs">
-                        <button class="tab-btn active" onclick="switchTab('yearly')">年度明细</button>
-                        <button class="tab-btn" onclick="switchTab('breakdown')">抵扣分解</button>
-                        <button class="tab-btn" onclick="switchTab('explanation')">税务说明</button>
+                        <button class="tab-btn active" onclick="switchTab('yearly')" data-i18n="yearly_details">Annual Details</button>
+                        <button class="tab-btn" onclick="switchTab('breakdown')" data-i18n="deduction_breakdown">Deduction Breakdown</button>
+                        <button class="tab-btn" onclick="switchTab('explanation')" data-i18n="tax_explanation">Tax Explanation</button>
                     </div>
                     
                     <div class="tab-content">
-                        <!-- 年度明细标签页 -->
+                        <!-- Annual Details Tab -->
                         <div id="yearlyTab" class="tab-pane active">
                             <div id="yearlyDetailContent">
-                                <!-- 动态生成年度明细 -->
+                                <!-- Dynamically generated annual details -->
                             </div>
                         </div>
                         
-                        <!-- 抵扣分解标签页 -->
+                        <!-- Deduction Breakdown Tab -->
                         <div id="breakdownTab" class="tab-pane">
                             <div id="breakdownDetailContent">
-                                <!-- 动态生成抵扣分解 -->
+                                <!-- Dynamically generated deduction breakdown -->
                             </div>
                         </div>
                         
-                        <!-- 税务说明标签页 -->
+                        <!-- Tax Explanation Tab -->
                         <div id="explanationTab" class="tab-pane">
                             <div class="tax-explanation-detailed">
-                                <h5>澳大利亚房产投资税务机制</h5>
+                                <h5 data-i18n="australian_property_tax_mechanism">Australian Property Investment Tax Mechanism</h5>
                                 
                                 <div class="explanation-section">
-                                    <h6>1. 负扣税 (Negative Gearing)</h6>
-                                    <p>当房产投资的可抵扣费用超过租金收入时，产生的亏损可以抵扣投资者的其他应税收入，从而减少总体税款。</p>
+                                    <h6 data-i18n="negative_gearing_title">1. Negative Gearing</h6>
+                                    <p data-i18n="negative_gearing_description">When the deductible expenses of a property investment exceed rental income, the resulting loss can be offset against the investor's other taxable income, thereby reducing overall tax liability.</p>
                                     <ul>
-                                        <li>适用于所有类型的投资房产</li>
-                                        <li>亏损金额按投资者的边际税率计算税务优惠</li>
-                                        <li>可以跨年度结转未使用的亏损</li>
+                                        <li data-i18n="negative_gearing_point1">Applies to all types of investment properties</li>
+                                        <li data-i18n="negative_gearing_point2">Loss amount calculated as tax benefit at investor's marginal tax rate</li>
+                                        <li data-i18n="negative_gearing_point3">Unused losses can be carried forward across tax years</li>
                                     </ul>
                                 </div>
                                 
                                 <div class="explanation-section">
-                                    <h6>2. 主要可抵扣费用</h6>
+                                    <h6 data-i18n="main_deductible_expenses">2. Main Deductible Expenses</h6>
                                     <ul>
-                                        <li><strong>贷款利息：</strong>投资房贷款的利息部分</li>
-                                        <li><strong>物业管理费：</strong>公寓的strata fees等</li>
-                                        <li><strong>市政费用：</strong>council rates, water rates等</li>
-                                        <li><strong>保险费用：</strong>房东保险premiums</li>
-                                        <li><strong>维护费用：</strong>修理和维护成本</li>
-                                        <li><strong>中介费用：</strong>租赁管理费用</li>
-                                        <li><strong>折旧费用：</strong>建筑和设备折旧</li>
+                                        <li><strong data-i18n="loan_interest_expense">Loan Interest:</strong> <span data-i18n="loan_interest_description">Interest portion of investment property loans</span></li>
+                                        <li><strong data-i18n="property_management_fees_expense">Property Management Fees:</strong> <span data-i18n="property_management_description">Apartment strata fees, etc.</span></li>
+                                        <li><strong data-i18n="council_fees_expense">Council Fees:</strong> <span data-i18n="council_fees_description">Council rates, water rates, etc.</span></li>
+                                        <li><strong data-i18n="insurance_expense">Insurance:</strong> <span data-i18n="insurance_description">Landlord insurance premiums</span></li>
+                                        <li><strong data-i18n="maintenance_expense">Maintenance:</strong> <span data-i18n="maintenance_description">Repair and maintenance costs</span></li>
+                                        <li><strong data-i18n="agent_fees_expense">Agent Fees:</strong> <span data-i18n="agent_fees_description">Rental management fees</span></li>
+                                        <li><strong data-i18n="depreciation_expense">Depreciation:</strong> <span data-i18n="depreciation_description">Building and equipment depreciation</span></li>
                                     </ul>
                                 </div>
                                 
                                 <div class="explanation-section">
-                                    <h6>3. 折旧计算</h6>
+                                    <h6 data-i18n="depreciation_calculation">3. Depreciation Calculation</h6>
                                     <ul>
-                                        <li><strong>Division 43：</strong>建筑结构折旧，新建筑2.5%/年，40年</li>
-                                        <li><strong>Division 40：</strong>设备折旧，如空调、地毯等</li>
-                                        <li>只有1987年后建造的房产可以申请建筑折旧</li>
+                                        <li><strong>Division 43:</strong> <span data-i18n="division43_description">Building structure depreciation, 2.5%/year for new buildings, 40 years</span></li>
+                                        <li><strong>Division 40:</strong> <span data-i18n="division40_description">Equipment depreciation, such as air conditioning, carpets, etc.</span></li>
+                                        <li data-i18n="depreciation_eligibility">Only properties built after 1987 can claim building depreciation</li>
                                     </ul>
                                 </div>
                                 
                                 <div class="explanation-section">
-                                    <h6>4. 税率影响</h6>
-                                    <p>税务优惠金额 = 亏损金额 × 边际税率</p>
+                                    <h6 data-i18n="tax_rate_impact">4. Tax Rate Impact</h6>
+                                    <p data-i18n="tax_benefit_formula">Tax Benefit Amount = Loss Amount × Marginal Tax Rate</p>
                                     <div class="tax-brackets">
                                         <div class="bracket">$0 - $18,200: 0%</div>
                                         <div class="bracket">$18,201 - $45,000: 19%</div>
@@ -366,11 +371,11 @@
             </div>
         </div>
 
-        <!-- 通用详情弹窗 -->
+        <!-- Generic Details Modal -->
         <div id="detailModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 id="modalTitle">详细信息</h3>
+                    <h3 id="modalTitle" data-i18n="detailed_information">Detailed Information</h3>
                     <span class="close-btn" onclick="closeDetailModal()">&times;</span>
                 </div>
                 <div class="modal-body">
@@ -379,17 +384,17 @@
                             <h4 id="modalSummaryTitle">-</h4>
                             <div class="summary-amount" id="modalSummaryAmount">-</div>
                             <div class="summary-details" id="modalSummaryDetails">
-                                <!-- 动态生成摘要详情 -->
+                                <!-- Dynamically generated summary details -->
                             </div>
                         </div>
                     </div>
                     
                     <div class="modal-tabs" id="modalTabs">
-                        <!-- 动态生成标签页 -->
+                        <!-- Dynamically generated tabs -->
                     </div>
                     
                     <div class="tab-content" id="modalTabContent">
-                        <!-- 动态生成标签页内容 -->
+                        <!-- Dynamically generated tab content -->
                     </div>
                 </div>
             </div>
@@ -397,8 +402,8 @@
 
         <footer>
             <div class="disclaimer">
-                <h4>免责声明</h4>
-                <p>本计算器提供的所有计算均基于用户输入的假设和预测，仅供参考。实际结果可能因市场波动、政策变化等因素而有所不同。本工具不构成专业的税务或投资建议，用户在做出任何投资决策前应咨询合格的专业顾问。</p>
+                <h4 data-i18n="disclaimer_title">Disclaimer</h4>
+                <p data-i18n="disclaimer_content">All calculations provided by this calculator are based on user-entered assumptions and predictions and are for reference only. Actual results may vary due to market fluctuations, policy changes, and other factors. This tool does not constitute professional tax or investment advice. Users should consult qualified professional advisors before making any investment decisions.</p>
             </div>
         </footer>
     </div>
