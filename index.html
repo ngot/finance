@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page-title">金融工具箱 - Finance Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .language-switcher select {
+            padding: 8px 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .language-switcher select option {
+            background: #333;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tools-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 50px;
+            margin-top: -30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-decoration: none;
+            color: white;
+        }
+
+        .tool-card.debt-cycle {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .tool-card.coming-soon {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .tool-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .tool-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .tool-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tool-features li {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            opacity: 0.8;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .tool-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            color: #666;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 40px 20px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+
+            .tools-section {
+                padding: 30px 20px;
+                margin-top: -20px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .tool-card {
+                padding: 30px;
+            }
+
+            .tool-title {
+                font-size: 1.5rem;
+            }
+
+            .language-switcher {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .tool-card {
+                padding: 25px;
+            }
+
+            .tool-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="language-switcher">
+                <select id="languageSelector">
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                </select>
+            </div>
+            <h1 data-i18n="main-title">🏦 金融工具箱</h1>
+            <p data-i18n="main-subtitle">专业的澳洲投资理财计算工具集合，帮助您做出明智的财务决策</p>
+        </div>
+
+        <div class="tools-section">
+            <h2 class="section-title" data-i18n="tools-title">🛠️ 可用工具</h2>
+            <p class="section-subtitle" data-i18n="tools-subtitle">
+                我们提供一系列专业的金融计算工具，基于澳洲税务和投资环境设计，帮助您分析不同的投资策略和财务规划方案。
+            </p>
+
+            <div class="tools-grid">
+                <!-- 债务循环计算器 -->
+                <a href="debt_cycle_calculator/debt_cycle_calculator.html" class="tool-card debt-cycle">
+                    <span class="tool-icon">🏠</span>
+                    <h3 class="tool-title" data-i18n="debt-cycle-title">债务循环投资计算器</h3>
+                    <p class="tool-description" data-i18n="debt-cycle-description">
+                        比较 Offset 账户与债务循环投资策略的收益差异，帮助您优化房贷和投资组合。
+                    </p>
+                    <ul class="tool-features">
+                        <li data-i18n="debt-cycle-feature1">实时收益对比分析</li>
+                        <li data-i18n="debt-cycle-feature2">税务优化计算</li>
+                        <li data-i18n="debt-cycle-feature3">盈亏平衡点分析</li>
+                        <li data-i18n="debt-cycle-feature4">多时间周期支持</li>
+                    </ul>
+                </a>
+
+                <!-- 即将推出的工具 -->
+                <div class="tool-card coming-soon">
+                    <span class="coming-soon-badge" data-i18n="coming-soon">即将推出</span>
+                    <span class="tool-icon">📈</span>
+                    <h3 class="tool-title" data-i18n="investment-calculator-title">投资组合计算器</h3>
+                    <p class="tool-description" data-i18n="investment-calculator-description">
+                        分析不同资产配置的风险收益特征，优化您的投资组合分配策略。
+                    </p>
+                    <ul class="tool-features">
+                        <li data-i18n="investment-calculator-feature1">资产配置优化</li>
+                        <li data-i18n="investment-calculator-feature2">风险收益分析</li>
+                        <li data-i18n="investment-calculator-feature3">历史回测功能</li>
+                        <li data-i18n="investment-calculator-feature4">多币种支持</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="coming-soon-badge" data-i18n="coming-soon">即将推出</span>
+                    <span class="tool-icon">🏡</span>
+                    <h3 class="tool-title" data-i18n="property-calculator-title">房产投资计算器</h3>
+                    <p class="tool-description" data-i18n="property-calculator-description">
+                        评估房产投资的现金流、资本增值和税务影响，全面分析投资回报。
+                    </p>
+                    <ul class="tool-features">
+                        <li data-i18n="property-calculator-feature1">现金流分析</li>
+                        <li data-i18n="property-calculator-feature2">税务抵扣计算</li>
+                        <li data-i18n="property-calculator-feature3">资本增值预测</li>
+                        <li data-i18n="property-calculator-feature4">租金收益率分析</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="coming-soon-badge" data-i18n="coming-soon">即将推出</span>
+                    <span class="tool-icon">🎯</span>
+                    <h3 class="tool-title" data-i18n="retirement-calculator-title">退休规划计算器</h3>
+                    <p class="tool-description" data-i18n="retirement-calculator-description">
+                        基于澳洲超级年金制度，计算退休所需资金和最优储蓄策略。
+                    </p>
+                    <ul class="tool-features">
+                        <li data-i18n="retirement-calculator-feature1">超级年金优化</li>
+                        <li data-i18n="retirement-calculator-feature2">退休资金需求</li>
+                        <li data-i18n="retirement-calculator-feature3">税务策略规划</li>
+                        <li data-i18n="retirement-calculator-feature4">通胀影响分析</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="coming-soon-badge" data-i18n="coming-soon">即将推出</span>
+                    <span class="tool-icon">💰</span>
+                    <h3 class="tool-title" data-i18n="tax-calculator-title">税务优化计算器</h3>
+                    <p class="tool-description" data-i18n="tax-calculator-description">
+                        分析不同收入结构和投资策略的税务影响，最大化税后收益。
+                    </p>
+                    <ul class="tool-features">
+                        <li data-i18n="tax-calculator-feature1">个人所得税计算</li>
+                        <li data-i18n="tax-calculator-feature2">资本利得税优化</li>
+                        <li data-i18n="tax-calculator-feature3">负扣税策略</li>
+                        <li data-i18n="tax-calculator-feature4">家庭信托分析</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="coming-soon-badge" data-i18n="coming-soon">即将推出</span>
+                    <span class="tool-icon">📊</span>
+                    <h3 class="tool-title" data-i18n="loan-calculator-title">贷款比较计算器</h3>
+                    <p class="tool-description" data-i18n="loan-calculator-description">
+                        比较不同贷款产品的成本和特性，找到最适合的融资方案。
+                    </p>
+                    <ul class="tool-features">
+                        <li data-i18n="loan-calculator-feature1">多产品对比</li>
+                        <li data-i18n="loan-calculator-feature2">还款计划分析</li>
+                        <li data-i18n="loan-calculator-feature3">提前还款影响</li>
+                        <li data-i18n="loan-calculator-feature4">利率变化模拟</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="footer-disclaimer">
+                ⚠️ 本网站提供的工具仅供教育和参考用途，不构成财务建议。
+            </p>
+            <p data-i18n="footer-advice">
+                在做出任何投资决策前，请咨询专业的财务顾问。
+            </p>
+            <p data-i18n="footer-copyright">
+                © 2025 Finance Tools. 专为澳洲投资者设计。
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 多语言翻译数据
+        const translations = {
+            zh: {
+                'page-title': '金融工具箱 - Finance Tools',
+                'main-title': '🏦 金融工具箱',
+                'main-subtitle': '专业的澳洲投资理财计算工具集合，帮助您做出明智的财务决策',
+                'tools-title': '🛠️ 可用工具',
+                'tools-subtitle': '我们提供一系列专业的金融计算工具，基于澳洲税务和投资环境设计，帮助您分析不同的投资策略和财务规划方案。',
+                'debt-cycle-title': '债务循环投资计算器',
+                'debt-cycle-description': '比较 Offset 账户与债务循环投资策略的收益差异，帮助您优化房贷和投资组合。',
+                'debt-cycle-feature1': '实时收益对比分析',
+                'debt-cycle-feature2': '税务优化计算',
+                'debt-cycle-feature3': '盈亏平衡点分析',
+                'debt-cycle-feature4': '多时间周期支持',
+                'coming-soon': '即将推出',
+                'investment-calculator-title': '投资组合计算器',
+                'investment-calculator-description': '分析不同资产配置的风险收益特征，优化您的投资组合分配策略。',
+                'investment-calculator-feature1': '资产配置优化',
+                'investment-calculator-feature2': '风险收益分析',
+                'investment-calculator-feature3': '历史回测功能',
+                'investment-calculator-feature4': '多币种支持',
+                'property-calculator-title': '房产投资计算器',
+                'property-calculator-description': '评估房产投资的现金流、资本增值和税务影响，全面分析投资回报。',
+                'property-calculator-feature1': '现金流分析',
+                'property-calculator-feature2': '税务抵扣计算',
+                'property-calculator-feature3': '资本增值预测',
+                'property-calculator-feature4': '租金收益率分析',
+                'retirement-calculator-title': '退休规划计算器',
+                'retirement-calculator-description': '基于澳洲超级年金制度，计算退休所需资金和最优储蓄策略。',
+                'retirement-calculator-feature1': '超级年金优化',
+                'retirement-calculator-feature2': '退休资金需求',
+                'retirement-calculator-feature3': '税务策略规划',
+                'retirement-calculator-feature4': '通胀影响分析',
+                'tax-calculator-title': '税务优化计算器',
+                'tax-calculator-description': '分析不同收入结构和投资策略的税务影响，最大化税后收益。',
+                'tax-calculator-feature1': '个人所得税计算',
+                'tax-calculator-feature2': '资本利得税优化',
+                'tax-calculator-feature3': '负扣税策略',
+                'tax-calculator-feature4': '家庭信托分析',
+                'loan-calculator-title': '贷款比较计算器',
+                'loan-calculator-description': '比较不同贷款产品的成本和特性，找到最适合的融资方案。',
+                'loan-calculator-feature1': '多产品对比',
+                'loan-calculator-feature2': '还款计划分析',
+                'loan-calculator-feature3': '提前还款影响',
+                'loan-calculator-feature4': '利率变化模拟',
+                'footer-disclaimer': '⚠️ 本网站提供的工具仅供教育和参考用途，不构成财务建议。',
+                'footer-advice': '在做出任何投资决策前，请咨询专业的财务顾问。',
+                'footer-copyright': '© 2025 Finance Tools. 专为澳洲投资者设计。'
+            },
+            en: {
+                'page-title': 'Finance Tools - Australian Investment Calculators',
+                'main-title': '🏦 Finance Tools',
+                'main-subtitle': 'Professional Australian investment and financial planning calculator suite to help you make informed financial decisions',
+                'tools-title': '🛠️ Available Tools',
+                'tools-subtitle': 'We provide a series of professional financial calculation tools designed based on Australian tax and investment environment to help you analyze different investment strategies and financial planning solutions.',
+                'debt-cycle-title': 'Debt Recycling Investment Calculator',
+                'debt-cycle-description': 'Compare returns between Offset Account and Debt Recycling Investment strategies to optimize your mortgage and investment portfolio.',
+                'debt-cycle-feature1': 'Real-time return comparison analysis',
+                'debt-cycle-feature2': 'Tax optimization calculations',
+                'debt-cycle-feature3': 'Break-even point analysis',
+                'debt-cycle-feature4': 'Multi-timeframe support',
+                'coming-soon': 'Coming Soon',
+                'investment-calculator-title': 'Investment Portfolio Calculator',
+                'investment-calculator-description': 'Analyze risk-return characteristics of different asset allocations and optimize your investment portfolio allocation strategy.',
+                'investment-calculator-feature1': 'Asset allocation optimization',
+                'investment-calculator-feature2': 'Risk-return analysis',
+                'investment-calculator-feature3': 'Historical backtesting',
+                'investment-calculator-feature4': 'Multi-currency support',
+                'property-calculator-title': 'Property Investment Calculator',
+                'property-calculator-description': 'Evaluate cash flow, capital growth and tax implications of property investments for comprehensive return analysis.',
+                'property-calculator-feature1': 'Cash flow analysis',
+                'property-calculator-feature2': 'Tax deduction calculations',
+                'property-calculator-feature3': 'Capital growth projections',
+                'property-calculator-feature4': 'Rental yield analysis',
+                'retirement-calculator-title': 'Retirement Planning Calculator',
+                'retirement-calculator-description': 'Calculate retirement funding requirements and optimal savings strategies based on Australian superannuation system.',
+                'retirement-calculator-feature1': 'Superannuation optimization',
+                'retirement-calculator-feature2': 'Retirement funding needs',
+                'retirement-calculator-feature3': 'Tax strategy planning',
+                'retirement-calculator-feature4': 'Inflation impact analysis',
+                'tax-calculator-title': 'Tax Optimization Calculator',
+                'tax-calculator-description': 'Analyze tax implications of different income structures and investment strategies to maximize after-tax returns.',
+                'tax-calculator-feature1': 'Personal income tax calculation',
+                'tax-calculator-feature2': 'Capital gains tax optimization',
+                'tax-calculator-feature3': 'Negative gearing strategies',
+                'tax-calculator-feature4': 'Family trust analysis',
+                'loan-calculator-title': 'Loan Comparison Calculator',
+                'loan-calculator-description': 'Compare costs and features of different loan products to find the most suitable financing solution.',
+                'loan-calculator-feature1': 'Multi-product comparison',
+                'loan-calculator-feature2': 'Repayment schedule analysis',
+                'loan-calculator-feature3': 'Early repayment impact',
+                'loan-calculator-feature4': 'Interest rate change simulation',
+                'footer-disclaimer': '⚠️ The tools provided on this website are for educational and reference purposes only and do not constitute financial advice.',
+                'footer-advice': 'Please consult a professional financial advisor before making any investment decisions.',
+                'footer-copyright': '© 2025 Finance Tools. Designed for Australian investors.'
+            }
+        };
+
+        // 当前语言
+        let currentLanguage = 'en';
+
+        // 初始化多语言功能
+        function initializeI18n() {
+            const languageSelector = document.getElementById('languageSelector');
+            languageSelector.addEventListener('change', function(e) {
+                currentLanguage = e.target.value;
+                updateLanguage();
+                document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
+            });
+        }
+
+        // 更新页面语言
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLanguage] && translations[currentLanguage][key]) {
+                    element.textContent = translations[currentLanguage][key];
+                }
+            });
+
+            // 更新页面标题
+            document.title = translations[currentLanguage]['page-title'];
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeI18n();
+            // 立即应用默认英文翻译
+            updateLanguage();
+        });
+    </script>
+</body>
+</html>
