@@ -41,12 +41,98 @@ header h1 {
     font-weight: 300;
 }
 
+/* Profile管理区域 */
+.profile-section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.profile-section h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.profile-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.profile-selector label {
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap;
+}
+
+.profile-selector select {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.profile-selector select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.profile-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.profile-btn:not(.delete-btn) {
+    background: #667eea;
+    color: white;
+}
+
+.profile-btn:not(.delete-btn):hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+}
+
+.profile-btn.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.profile-btn.delete-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
 /* 主要内容区域 */
 .main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    align-items: start;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 /* 输入区域样式 */
@@ -266,12 +352,22 @@ header h1 {
 }
 
 /* 图表容器 */
-#cashFlowChart {
-    max-width: 100%;
-    height: 300px;
+.chart-section {
+    margin-top: 20px;
+}
+
+.chart-container {
     background: white;
     border-radius: 6px;
-    padding: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    height: 400px;
+    position: relative;
+}
+
+#cashFlowChart {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* 页脚样式 */
@@ -303,13 +399,25 @@ footer {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .main-content {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
     header h1 {
         font-size: 2rem;
+    }
+    
+    .profile-controls {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .profile-selector {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+    }
+    
+    .profile-actions {
+        justify-content: center;
+        flex-wrap: wrap;
     }
     
     .overview-grid,
@@ -323,8 +431,13 @@ footer {
     }
     
     .input-section,
-    .results-section {
+    .results-section,
+    .profile-section {
         padding: 20px;
+    }
+    
+    .chart-container {
+        height: 300px;
     }
 }
 

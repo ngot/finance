@@ -2,16 +2,187 @@
 
 class PropertyInvestmentCalculator {
     constructor() {
-        this.initializeEventListeners();
         this.cashFlowChart = null;
+        this.currentProfile = 'default';
+        this.profiles = this.loadProfiles();
+        this.initializeEventListeners();
+        this.initializeProfiles();
+        this.loadCurrentProfile();
     }
 
     initializeEventListeners() {
         const calculateBtn = document.getElementById('calculateBtn');
         calculateBtn.addEventListener('click', () => this.calculateInvestment());
 
-        // 添加输入验证
+        // Profile管理事件
+        document.getElementById('profileSelect').addEventListener('change', (e) => this.switchProfile(e.target.value));
+        document.getElementById('newProfileBtn').addEventListener('click', () => this.createNewProfile());
+        document.getElementById('saveProfileBtn').addEventListener('click', () => this.saveCurrentProfile());
+        document.getElementById('deleteProfileBtn').addEventListener('click', () => this.deleteCurrentProfile());
+
+        // 添加输入验证和自动保存
         this.addInputValidation();
+        this.addAutoSave();
+    }
+
+    // Profile管理功能
+    loadProfiles() {
+        const saved = localStorage.getItem('propertyInvestmentProfiles');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return {
+            'default': {
+                name: '默认方案',
+                data: {}
+            }
+        };
+    }
+
+    saveProfiles() {
+        localStorage.setItem('propertyInvestmentProfiles', JSON.stringify(this.profiles));
+    }
+
+    initializeProfiles() {
+        const select = document.getElementById('profileSelect');
+        select.innerHTML = '';
+        
+        Object.keys(this.profiles).forEach(key => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = this.profiles[key].name;
+            select.appendChild(option);
+        });
+        
+        select.value = this.currentProfile;
+        this.updateDeleteButtonState();
+    }
+
+    switchProfile(profileKey) {
+        this.saveCurrentProfileData();
+        this.currentProfile = profileKey;
+        this.loadCurrentProfile();
+        this.updateDeleteButtonState();
+    }
+
+    createNewProfile() {
+        const name = prompt('请输入新方案名称:');
+        if (!name || name.trim() === '') return;
+        
+        const key = 'profile_' + Date.now();
+        this.profiles[key] = {
+            name: name.trim(),
+            data: {}
+        };
+        
+        this.saveProfiles();
+        this.initializeProfiles();
+        this.switchProfile(key);
+    }
+
+    saveCurrentProfile() {
+        if (this.currentProfile === 'default') {
+            const name = prompt('请输入方案名称:', '默认方案');
+            if (!name || name.trim() === '') return;
+            this.profiles[this.currentProfile].name = name.trim();
+        }
+        
+        this.saveCurrentProfileData();
+        this.saveProfiles();
+        this.initializeProfiles();
+        
+        // 显示保存成功提示
+        this.showNotification('方案已保存', 'success');
+    }
+
+    deleteCurrentProfile() {
+        if (this.currentProfile === 'default') {
+            alert('默认方案不能删除');
+            return;
+        }
+        
+        if (!confirm('确定要删除当前方案吗？')) return;
+        
+        delete this.profiles[this.currentProfile];
+        this.saveProfiles();
+        this.currentProfile = 'default';
+        this.initializeProfiles();
+        this.loadCurrentProfile();
+    }
+
+    updateDeleteButtonState() {
+        const deleteBtn = document.getElementById('deleteProfileBtn');
+        deleteBtn.disabled = this.currentProfile === 'default';
+        deleteBtn.style.opacity = this.currentProfile === 'default' ? '0.5' : '1';
+    }
+
+    saveCurrentProfileData() {
+        const data = this.getInputValues();
+        this.profiles[this.currentProfile].data = data;
+    }
+
+    loadCurrentProfile() {
+        const data = this.profiles[this.currentProfile].data;
+        if (Object.keys(data).length === 0) return;
+        
+        Object.keys(data).forEach(key => {
+            const element = document.getElementById(key);
+            if (element && data[key] !== undefined && data[key] !== null) {
+                element.value = data[key];
+            }
+        });
+    }
+
+    addAutoSave() {
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                this.saveCurrentProfileData();
+                this.saveProfiles();
+            });
+        });
+    }
+
+    showNotification(message, type = 'info') {
+        // 创建通知元素
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        // 添加样式
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#667eea'};
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // 显示动画
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // 自动隐藏
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
     }
 
     addInputValidation() {
@@ -404,13 +575,21 @@ class PropertyInvestmentCalculator {
                     data: grossCashFlow,
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    tension: 0.4
+                    tension: 0.4,
+                    fill: false,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
                 }, {
                     label: '税后现金流',
                     data: netCashFlow,
                     borderColor: '#28a745',
                     backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.4
+                    tension: 0.4,
+                    fill: false,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
                 }]
             },
             options: {
@@ -419,18 +598,70 @@ class PropertyInvestmentCalculator {
                 plugins: {
                     title: {
                         display: true,
-                        text: '年度现金流趋势'
+                        text: '年度现金流趋势',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        color: '#495057'
                     },
                     legend: {
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#667eea',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + 
+                                       new Intl.NumberFormat('en-AU', {
+                                           style: 'currency',
+                                           currency: 'AUD',
+                                           minimumFractionDigits: 0
+                                       }).format(context.parsed.y);
+                            }
+                        }
                     }
                 },
                 scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        },
+                        ticks: {
+                            color: '#495057',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
                     y: {
                         beginAtZero: false,
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        },
                         ticks: {
+                            color: '#495057',
+                            font: {
+                                size: 11
+                            },
                             callback: function(value) {
-                                return '$' + value.toLocaleString();
+                                return new Intl.NumberFormat('en-AU', {
+                                    style: 'currency',
+                                    currency: 'AUD',
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                }).format(value);
                             }
                         }
                     }
@@ -438,6 +669,12 @@ class PropertyInvestmentCalculator {
                 interaction: {
                     intersect: false,
                     mode: 'index'
+                },
+                elements: {
+                    point: {
+                        hoverBackgroundColor: '#fff',
+                        hoverBorderWidth: 2
+                    }
                 }
             }
         });

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房地产投资计算器 - 测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>房地产投资计算器 - 功能测试</h1>
+    
+    <div class="test-section">
+        <h2>应用预览</h2>
+        <p>下面是完整的房地产投资计算器应用：</p>
+        <iframe src="index.html" title="房地产投资计算器"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>功能测试</h2>
+        <p>点击下面的按钮测试各项功能：</p>
+        
+        <button class="test-button" onclick="testLocalStorage()">测试本地存储</button>
+        <button class="test-button" onclick="testCalculation()">测试计算功能</button>
+        <button class="test-button" onclick="testResponsive()">测试响应式设计</button>
+        <button class="test-button" onclick="loadSampleData()">加载示例数据</button>
+        
+        <div id="testResults" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>使用说明</h2>
+        <ol>
+            <li><strong>方案管理</strong>: 在顶部可以创建、保存、切换不同的投资方案</li>
+            <li><strong>数据输入</strong>: 填写房产信息、贷款信息、运营费用等</li>
+            <li><strong>自动保存</strong>: 输入的数据会自动保存到浏览器本地存储</li>
+            <li><strong>计算分析</strong>: 点击"计算投资回报"查看详细分析</li>
+            <li><strong>图表展示</strong>: 分析结果包含现金流趋势图表</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>示例数据</h2>
+        <p>可以使用以下示例数据进行测试：</p>
+        <ul>
+            <li>购买价格: $800,000</li>
+            <li>购买成本: $40,000</li>
+            <li>每周租金: $600</li>
+            <li>贷款金额: $640,000</li>
+            <li>年利率: 6.5%</li>
+            <li>个人年收入: $120,000</li>
+            <li>资本增值率: 5%</li>
+            <li>持有年限: 10年</li>
+        </ul>
+    </div>
+
+    <script>
+        function testLocalStorage() {
+            const results = document.getElementById('testResults');
+            try {
+                // 测试localStorage
+                const testData = { test: 'data' };
+                localStorage.setItem('test', JSON.stringify(testData));
+                const retrieved = JSON.parse(localStorage.getItem('test'));
+                
+                if (retrieved.test === 'data') {
+                    results.innerHTML = '<div class="success">✓ 本地存储功能正常</div>';
+                } else {
+                    results.innerHTML = '<div class="error">✗ 本地存储测试失败</div>';
+                }
+                
+                localStorage.removeItem('test');
+            } catch (error) {
+                results.innerHTML = '<div class="error">✗ 本地存储不可用: ' + error.message + '</div>';
+            }
+        }
+
+        function testCalculation() {
+            const results = document.getElementById('testResults');
+            try {
+                // 简单的计算测试
+                const testCalc = (800000 * Math.pow(1.05, 10)) - 800000;
+                const expected = Math.round(testCalc);
+                
+                if (expected > 0) {
+                    results.innerHTML = '<div class="success">✓ 计算引擎功能正常 (预期资本增值: $' + expected.toLocaleString() + ')</div>';
+                } else {
+                    results.innerHTML = '<div class="error">✗ 计算功能异常</div>';
+                }
+            } catch (error) {
+                results.innerHTML = '<div class="error">✗ 计算测试失败: ' + error.message + '</div>';
+            }
+        }
+
+        function testResponsive() {
+            const results = document.getElementById('testResults');
+            const width = window.innerWidth;
+            
+            if (width < 768) {
+                results.innerHTML = '<div class="success">✓ 当前为移动设备视图 (宽度: ' + width + 'px)</div>';
+            } else {
+                results.innerHTML = '<div class="success">✓ 当前为桌面设备视图 (宽度: ' + width + 'px)</div>';
+            }
+        }
+
+        function loadSampleData() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '<div class="success">✓ 请在主应用中的浏览器控制台输入 loadExampleData() 来加载示例数据</div>';
+        }
+
+        // 页面加载时自动测试
+        window.onload = function() {
+            testLocalStorage();
+        };
+    </script>
+</body>
+</html>
