@@ -102,11 +102,14 @@
 ## 📁 文件结构
 
 ```
-├── README.md                    # 项目说明文档
-├── debt_cycle_calculator.html   # 主计算器文件
-├── dept_recycle.md             # 债务循环策略说明
-├── example1.md                 # 高税率案例分析
-└── example2.md                 # 低利率案例分析
+├── index.html                                   # 金融工具箱主页
+├── debt_cycle_calculator/
+│   ├── README.md                               # 债务循环计算器说明文档
+│   ├── debt_cycle_calculator.html              # 债务循环投资计算器
+│   ├── dept_recycle.md                         # 债务循环策略说明
+│   ├── example1.md                             # 高税率案例分析
+│   └── example2.md                             # 低利率案例分析
+└── [future_tools]/                             # 未来将添加更多金融工具
 ```
 
 ## 🚀 快速开始

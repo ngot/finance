@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -348,8 +348,8 @@
         <div class="header">
             <div class="language-switcher">
                 <select id="languageSelector">
-                    <option value="zh">中文</option>
                     <option value="en">English</option>
+                    <option value="zh">中文</option>
                 </select>
             </div>
             <h1 data-i18n="main-title">🏠 债务循环投资计算器</h1>
@@ -543,7 +543,7 @@
         };
 
         // 当前语言
-        let currentLanguage = 'zh';
+        let currentLanguage = 'en';
 
         // 初始化多语言功能
         function initializeI18n() {
@@ -581,6 +581,8 @@
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             initializeI18n();
+            // 立即应用默认英文翻译
+            updateLanguage();
         });
 
         document.getElementById('calculatorForm').addEventListener('submit', function(e) {
