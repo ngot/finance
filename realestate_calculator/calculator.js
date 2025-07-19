@@ -1674,22 +1674,203 @@ function openTotalDeductionsModal() {
     const yearlyAnalysis = window.calculator.currentYearlyAnalysis;
     const summary = window.calculator.calculateSummary(inputs, yearlyAnalysis, {});
     
-    // 重用税务优惠弹窗的抵扣分解逻辑
-    window.calculator.generateModalContent(yearlyAnalysis, inputs);
-    document.getElementById('taxBenefitsModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    // 计算各项费用的累计金额
+    let totalInterest = 0;
+    let totalOperating = 0;
+    let totalDeductions = 0;
     
-    // 切换到抵扣分解标签页
-    setTimeout(() => {
-        const tabs = document.querySelectorAll('#taxBenefitsModal .tab-btn');
-        const panes = document.querySelectorAll('#taxBenefitsModal .tab-pane');
+    yearlyAnalysis.forEach(year => {
+        const loanPayments = window.calculator.calculateLoanPayments(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, inputs.repaymentType);
+        const annualInterest = loanPayments.monthlyInterest * 12;
+        const managementFeesAmount = year.rentalIncome * (inputs.managementFees / 100);
+        const operatingExpenses = inputs.strataFees + inputs.councilRates + inputs.waterRates + 
+                                inputs.insurance + inputs.maintenance + managementFeesAmount;
         
-        tabs.forEach(tab => tab.classList.remove('active'));
-        panes.forEach(pane => pane.classList.remove('active'));
-        
-        tabs[1].classList.add('active'); // 抵扣分解标签页
-        panes[1].classList.add('active');
-    }, 100);
+        totalInterest += annualInterest;
+        totalOperating += operatingExpenses;
+        totalDeductions += year.totalDeductions;
+    });
+    
+    const config = {
+        title: '累计可抵扣费用详细分析',
+        summaryTitle: '累计可抵扣费用',
+        summaryAmount: window.calculator.formatCurrency(totalDeductions),
+        summaryDetails: `
+            <span>投资期限: <strong>${inputs.holdingPeriod}年</strong></span>
+            <span>年均抵扣: <strong>${window.calculator.formatCurrency(totalDeductions / inputs.holdingPeriod)}</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'deductionsBreakdown',
+                name: '费用分解',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>累计可抵扣费用分解 (${inputs.holdingPeriod}年)</h5>
+                        
+                        <div class="breakdown-categories">
+                            <div class="category-card">
+                                <h6>贷款利息</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(totalInterest)}</div>
+                                <div class="category-percentage">${((totalInterest / totalDeductions) * 100).toFixed(1)}%</div>
+                                <small>投资房贷款利息支出</small>
+                            </div>
+                            
+                            <div class="category-card">
+                                <h6>运营费用</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(totalOperating)}</div>
+                                <div class="category-percentage">${((totalOperating / totalDeductions) * 100).toFixed(1)}%</div>
+                                <small>物业费、市政费、保险等</small>
+                            </div>
+                        </div>
+                        
+                        <div class="breakdown-details">
+                            <h6>运营费用明细</h6>
+                            <div class="detail-breakdown">
+                                <div class="breakdown-item">
+                                    <span>物业管理费</span>
+                                    <span>${window.calculator.formatCurrency(inputs.strataFees * inputs.holdingPeriod)}</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>市政费</span>
+                                    <span>${window.calculator.formatCurrency(inputs.councilRates * inputs.holdingPeriod)}</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>水费</span>
+                                    <span>${window.calculator.formatCurrency(inputs.waterRates * inputs.holdingPeriod)}</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>保险费</span>
+                                    <span>${window.calculator.formatCurrency(inputs.insurance * inputs.holdingPeriod)}</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>维护费用</span>
+                                    <span>${window.calculator.formatCurrency(inputs.maintenance * inputs.holdingPeriod)}</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>中介管理费</span>
+                                    <span>${window.calculator.formatCurrency(yearlyAnalysis.reduce((sum, year) => sum + (year.rentalIncome * inputs.managementFees / 100), 0))}</span>
+                                </div>
+                                <div class="breakdown-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                                    <span><strong>累计可抵扣费用</strong></span>
+                                    <span><strong>${window.calculator.formatCurrency(totalDeductions)}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'deductionsYearly',
+                name: '年度明细',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>年度可抵扣费用明细</h5>
+                        ${yearlyAnalysis.map(year => {
+                            const loanPayments = window.calculator.calculateLoanPayments(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, inputs.repaymentType);
+                            const annualInterest = loanPayments.monthlyInterest * 12;
+                            const managementFeesAmount = year.rentalIncome * (inputs.managementFees / 100);
+                            
+                            return `
+                                <div class="year-detail-card">
+                                    <div class="year-header">
+                                        <span class="year-title">第${year.year}年</span>
+                                        <span class="year-benefit-amount positive">${window.calculator.formatCurrency(year.totalDeductions)}</span>
+                                    </div>
+                                    <div class="year-details">
+                                        <div class="detail-grid">
+                                            <div class="detail-section">
+                                                <h6>贷款费用</h6>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">贷款利息</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(annualInterest)}</span>
+                                                </div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <h6>运营费用</h6>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">物业管理费</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(inputs.strataFees)}</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">市政费</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(inputs.councilRates)}</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">水费</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(inputs.waterRates)}</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">保险费</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(inputs.insurance)}</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">维护费用</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(inputs.maintenance)}</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <span class="detail-label">中介管理费</span>
+                                                    <span class="detail-value">${window.calculator.formatCurrency(managementFeesAmount)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="calculation-summary">
+                                            <div class="detail-item">
+                                                <span class="detail-label"><strong>年度可抵扣费用</strong></span>
+                                                <span class="detail-value"><strong>${window.calculator.formatCurrency(year.totalDeductions)}</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `
+            },
+            {
+                id: 'deductionsTips',
+                name: '抵扣优化',
+                content: `
+                    <div class="tax-explanation-detailed">
+                        <h5>可抵扣费用优化建议</h5>
+                        
+                        <div class="explanation-section">
+                            <h6>1. 主要可抵扣费用类别</h6>
+                            <ul>
+                                <li><strong>贷款利息:</strong> 投资房贷款的利息部分可全额抵扣</li>
+                                <li><strong>物业管理费:</strong> 公寓的strata fees等物业费用</li>
+                                <li><strong>市政费用:</strong> council rates, water rates等政府费用</li>
+                                <li><strong>保险费用:</strong> 房东保险premiums</li>
+                                <li><strong>维护费用:</strong> 修理和维护成本</li>
+                                <li><strong>中介费用:</strong> 租赁管理费用</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="explanation-section">
+                            <h6>2. 抵扣优化策略</h6>
+                            <ul>
+                                <li><strong>记录保存:</strong> 保留所有费用收据和发票</li>
+                                <li><strong>专业咨询:</strong> 定期咨询税务顾问</li>
+                                <li><strong>费用分类:</strong> 区分可抵扣和不可抵扣费用</li>
+                                <li><strong>时间规划:</strong> 合理安排维修和改善时间</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="explanation-section">
+                            <h6>3. 注意事项</h6>
+                            <ul>
+                                <li><strong>资本性支出:</strong> 大型改善项目可能不能立即抵扣</li>
+                                <li><strong>个人使用:</strong> 如有个人使用需按比例计算</li>
+                                <li><strong>ATO规定:</strong> 遵循澳洲税务局最新规定</li>
+                                <li><strong>专业建议:</strong> 复杂情况建议咨询专业人士</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
 }
 
 function openCgtModal() {
