@@ -9,6 +9,15 @@ class PropertyInvestmentCalculator {
         this.initializeProfiles();
         this.loadCurrentProfile();
         this.initializeURLHandling();
+        
+        // Wait for language manager to be ready
+        if (window.languageManager) {
+            this.updateProfileNames();
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => this.updateProfileNames(), 100);
+            });
+        }
     }
 
     initializeEventListeners() {
@@ -62,10 +71,49 @@ class PropertyInvestmentCalculator {
         
         return {
             'default': {
-                name: '默认方案 (示例数据)',
+                name: this.getTranslatedProfileName('default'),
                 data: defaultData
             }
         };
+    }
+
+    getTranslatedProfileName(profileKey) {
+        if (window.languageManager) {
+            if (profileKey === 'default') {
+                return window.languageManager.translate('default_profile') + ' (' + window.languageManager.translate('load_example') + ')';
+            }
+        }
+        return profileKey === 'default' ? 'Default Profile (Example)' : profileKey;
+    }
+
+    updateProfileNames() {
+        if (window.languageManager) {
+            // Update default profile name
+            if (this.profiles['default']) {
+                this.profiles['default'].name = this.getTranslatedProfileName('default');
+            }
+            this.initializeProfiles();
+            
+            // Re-translate any existing results if they are displayed
+            if (document.getElementById('resultsSection').style.display !== 'none') {
+                this.updateDynamicTranslations();
+            }
+        }
+    }
+
+    updateDynamicTranslations() {
+        // This method will be called when language changes to update dynamic content
+        if (window.languageManager) {
+            // Update modal titles that are set dynamically
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle && !modalTitle.hasAttribute('data-i18n')) {
+                modalTitle.setAttribute('data-i18n', 'detailed_information');
+                modalTitle.textContent = window.languageManager.translate('detailed_information');
+            }
+            
+            // Re-translate the page to catch any missed elements
+            window.languageManager.translatePage();
+        }
     }
 
     saveProfiles() {
@@ -757,9 +805,11 @@ class PropertyInvestmentCalculator {
     }
 
     displayResults(inputs, yearlyAnalysis, capitalGains, summary) {
+        const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
+        
         // 概览数据
         document.getElementById('totalInitialInvestment').textContent = this.formatCurrency(summary.totalInitialInvestment);
-        document.getElementById('displayHoldingPeriod').textContent = `${inputs.holdingPeriod} 年`;
+        document.getElementById('displayHoldingPeriod').textContent = `${inputs.holdingPeriod} ${t('years')}`;
         document.getElementById('futurePropertyValue').textContent = this.formatCurrency(capitalGains.futureValue);
         document.getElementById('grossRentalYield').textContent = `${summary.grossRentalYield.toFixed(2)}%`;
         document.getElementById('netRentalYield').textContent = `${summary.netRentalYield.toFixed(2)}%`;
@@ -778,7 +828,7 @@ class PropertyInvestmentCalculator {
         // 税务总结
         document.getElementById('totalDeductions').textContent = this.formatCurrency(summary.totalDeductions);
         document.getElementById('capitalGainsTax').textContent = this.formatCurrency(capitalGains.cgtTax);
-        document.getElementById('cgtDiscountApplicable').textContent = capitalGains.cgtDiscount ? '是 (50%折扣)' : '否';
+        document.getElementById('cgtDiscountApplicable').textContent = capitalGains.cgtDiscount ? `${t('yes')}` : t('no');
         
         // 出售时机建议
         this.displaySellingRecommendation(inputs, capitalGains, summary);
@@ -789,34 +839,35 @@ class PropertyInvestmentCalculator {
 
     displaySellingRecommendation(inputs, capitalGains, summary) {
         const container = document.getElementById('sellingRecommendation');
+        const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
         
         let recommendation = '';
         
         if (inputs.holdingPeriod <= 1) {
             recommendation = `
-                <h4>⚠️ 短期持有风险提醒</h4>
-                <p>您计划持有房产${inputs.holdingPeriod}年，这意味着您无法享受50%的资本利得税折扣。建议考虑持有超过12个月以获得税务优惠。</p>
+                <h4>⚠️ ${t('short_term_holding_risk')}</h4>
+                <p>${t('short_term_holding_warning').replace('{years}', inputs.holdingPeriod)}</p>
             `;
         } else if (summary.irr > 0.08) {
             recommendation = `
-                <h4>✅ 投资表现良好</h4>
-                <p>根据您的假设，该投资的年化回报率为${(summary.irr * 100).toFixed(2)}%，表现良好。持有${inputs.holdingPeriod}年后出售可以享受50%的CGT折扣，是一个合理的投资期限。</p>
+                <h4>✅ ${t('good_investment_performance')}</h4>
+                <p>${t('good_performance_description').replace('{irr}', (summary.irr * 100).toFixed(2)).replace('{years}', inputs.holdingPeriod)}</p>
             `;
         } else if (summary.irr > 0.05) {
             recommendation = `
-                <h4>📊 投资表现中等</h4>
-                <p>该投资的年化回报率为${(summary.irr * 100).toFixed(2)}%，表现中等。建议考虑调整租金预期或寻找更好的增值潜力区域。</p>
+                <h4>📊 ${t('moderate_investment_performance')}</h4>
+                <p>${t('moderate_performance_description').replace('{irr}', (summary.irr * 100).toFixed(2))}</p>
             `;
         } else {
             recommendation = `
-                <h4>⚠️ 投资回报偏低</h4>
-                <p>该投资的年化回报率仅为${(summary.irr * 100).toFixed(2)}%，可能不如其他投资选择。建议重新评估投资参数或考虑其他投资机会。</p>
+                <h4>⚠️ ${t('poor_investment_performance')}</h4>
+                <p>${t('poor_performance_description').replace('{irr}', (summary.irr * 100).toFixed(2))}</p>
             `;
         }
         
         if (capitalGains.cgtDiscount) {
             recommendation += `
-                <p><strong>税务优势：</strong>由于持有超过12个月，您可以享受50%的资本利得税折扣，节省税款约${this.formatCurrency(capitalGains.cgtTax)}。</p>
+                <p><strong>${t('tax_advantage')}:</strong> ${t('cgt_discount_benefit_description').replace('{amount}', this.formatCurrency(capitalGains.cgtTax))}</p>
             `;
         }
         
@@ -831,7 +882,8 @@ class PropertyInvestmentCalculator {
             this.cashFlowChart.destroy();
         }
         
-        const years = yearlyAnalysis.map(item => `第${item.year}年`);
+        const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
+        const years = yearlyAnalysis.map(item => `${t('year')} ${item.year}`);
         const grossCashFlow = yearlyAnalysis.map(item => item.grossCashFlow);
         const netCashFlow = yearlyAnalysis.map(item => item.netCashFlow);
         
@@ -840,7 +892,7 @@ class PropertyInvestmentCalculator {
             data: {
                 labels: years,
                 datasets: [{
-                    label: '税前现金流',
+                    label: t('pre_tax_cash_flow'),
                     data: grossCashFlow,
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
@@ -850,7 +902,7 @@ class PropertyInvestmentCalculator {
                     pointRadius: 5,
                     pointHoverRadius: 7
                 }, {
-                    label: '税后现金流',
+                    label: t('after_tax_cash_flow'),
                     data: netCashFlow,
                     borderColor: '#28a745',
                     backgroundColor: 'rgba(40, 167, 69, 0.1)',
@@ -2017,35 +2069,37 @@ function openTotalDeductionsModal() {
         totalDeductions += year.totalDeductions;
     });
     
+    const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
+    
     const config = {
-        title: '累计可抵扣费用详细分析',
-        summaryTitle: '累计可抵扣费用',
+        title: t('total_deductions_detailed_analysis'),
+        summaryTitle: t('total_deductions'),
         summaryAmount: window.calculator.formatCurrency(totalDeductions),
         summaryDetails: `
-            <span>投资期限: <strong>${inputs.holdingPeriod}年</strong></span>
-            <span>年均抵扣: <strong>${window.calculator.formatCurrency(totalDeductions / inputs.holdingPeriod)}</strong></span>
+            <span>${t('investment_period')}: <strong>${inputs.holdingPeriod}${t('years')}</strong></span>
+            <span>${t('average_annual_deduction')}: <strong>${window.calculator.formatCurrency(totalDeductions / inputs.holdingPeriod)}</strong></span>
         `,
         tabs: [
             {
                 id: 'deductionsBreakdown',
-                name: '费用分解',
+                name: t('expense_breakdown'),
                 content: `
                     <div class="breakdown-summary">
-                        <h5>累计可抵扣费用分解 (${inputs.holdingPeriod}年)</h5>
+                        <h5>${t('total_deductions')} ${t('expense_breakdown')} (${inputs.holdingPeriod}${t('years')})</h5>
                         
                         <div class="breakdown-categories">
                             <div class="category-card">
-                                <h6>贷款利息</h6>
+                                <h6>${t('loan_interest')}</h6>
                                 <div class="category-amount">${window.calculator.formatCurrency(totalInterest)}</div>
                                 <div class="category-percentage">${((totalInterest / totalDeductions) * 100).toFixed(1)}%</div>
-                                <small>投资房贷款利息支出</small>
+                                <small>${t('investment_property_loan_interest')}</small>
                             </div>
                             
                             <div class="category-card">
-                                <h6>运营费用</h6>
+                                <h6>${t('operating_expenses')}</h6>
                                 <div class="category-amount">${window.calculator.formatCurrency(totalOperating)}</div>
                                 <div class="category-percentage">${((totalOperating / totalDeductions) * 100).toFixed(1)}%</div>
-                                <small>物业费、市政费、保险等</small>
+                                <small>${t('property_fees_council_insurance')}</small>
                             </div>
                         </div>
                         
