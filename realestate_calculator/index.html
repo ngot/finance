@@ -29,7 +29,10 @@
                     <button id="saveProfileBtn" class="profile-btn">保存方案</button>
                     <button id="deleteProfileBtn" class="profile-btn delete-btn">删除方案</button>
                     <button id="loadExampleBtn" class="profile-btn example-btn">加载示例</button>
+                    <button id="exportBtn" class="profile-btn export-btn">导出数据</button>
+                    <button id="importBtn" class="profile-btn import-btn">导入数据</button>
                 </div>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;">
             </div>
         </div>
 
@@ -195,9 +198,14 @@
                         <span class="label">累计租金收入</span>
                         <span class="value" id="totalRentalIncome">-</span>
                     </div>
-                    <div class="return-item">
-                        <span class="label">累计税务优惠</span>
-                        <span class="value" id="totalTaxBenefits">-</span>
+                    <div class="return-item tax-benefits-item">
+                        <div class="tax-benefits-header" onclick="openTaxBenefitsModal()">
+                            <div class="tax-benefits-main">
+                                <span class="label">累计税务优惠</span>
+                                <span class="value" id="totalTaxBenefits">-</span>
+                            </div>
+                            <span class="detail-icon">🔍</span>
+                        </div>
                     </div>
                     <div class="return-item">
                         <span class="label">税后总回报</span>
@@ -242,6 +250,101 @@
                 <h3>年度现金流分析图表</h3>
                 <div class="chart-container">
                     <canvas id="cashFlowChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 税务优惠详情弹窗 -->
+        <div id="taxBenefitsModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>税务优惠详细分析</h3>
+                    <span class="close-btn" onclick="closeTaxBenefitsModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-summary">
+                        <div class="summary-card">
+                            <h4>累计税务优惠总额</h4>
+                            <div class="summary-amount" id="modalTotalBenefits">-</div>
+                            <div class="summary-details">
+                                <span>受益年数: <strong id="modalBenefitYears">-</strong></span>
+                                <span>边际税率: <strong id="modalTaxRate">-</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-tabs">
+                        <button class="tab-btn active" onclick="switchTab('yearly')">年度明细</button>
+                        <button class="tab-btn" onclick="switchTab('breakdown')">抵扣分解</button>
+                        <button class="tab-btn" onclick="switchTab('explanation')">税务说明</button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <!-- 年度明细标签页 -->
+                        <div id="yearlyTab" class="tab-pane active">
+                            <div id="yearlyDetailContent">
+                                <!-- 动态生成年度明细 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 抵扣分解标签页 -->
+                        <div id="breakdownTab" class="tab-pane">
+                            <div id="breakdownDetailContent">
+                                <!-- 动态生成抵扣分解 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 税务说明标签页 -->
+                        <div id="explanationTab" class="tab-pane">
+                            <div class="tax-explanation-detailed">
+                                <h5>澳大利亚房产投资税务机制</h5>
+                                
+                                <div class="explanation-section">
+                                    <h6>1. 负扣税 (Negative Gearing)</h6>
+                                    <p>当房产投资的可抵扣费用超过租金收入时，产生的亏损可以抵扣投资者的其他应税收入，从而减少总体税款。</p>
+                                    <ul>
+                                        <li>适用于所有类型的投资房产</li>
+                                        <li>亏损金额按投资者的边际税率计算税务优惠</li>
+                                        <li>可以跨年度结转未使用的亏损</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="explanation-section">
+                                    <h6>2. 主要可抵扣费用</h6>
+                                    <ul>
+                                        <li><strong>贷款利息：</strong>投资房贷款的利息部分</li>
+                                        <li><strong>物业管理费：</strong>公寓的strata fees等</li>
+                                        <li><strong>市政费用：</strong>council rates, water rates等</li>
+                                        <li><strong>保险费用：</strong>房东保险premiums</li>
+                                        <li><strong>维护费用：</strong>修理和维护成本</li>
+                                        <li><strong>中介费用：</strong>租赁管理费用</li>
+                                        <li><strong>折旧费用：</strong>建筑和设备折旧</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="explanation-section">
+                                    <h6>3. 折旧计算</h6>
+                                    <ul>
+                                        <li><strong>Division 43：</strong>建筑结构折旧，新建筑2.5%/年，40年</li>
+                                        <li><strong>Division 40：</strong>设备折旧，如空调、地毯等</li>
+                                        <li>只有1987年后建造的房产可以申请建筑折旧</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="explanation-section">
+                                    <h6>4. 税率影响</h6>
+                                    <p>税务优惠金额 = 亏损金额 × 边际税率</p>
+                                    <div class="tax-brackets">
+                                        <div class="bracket">$0 - $18,200: 0%</div>
+                                        <div class="bracket">$18,201 - $45,000: 19%</div>
+                                        <div class="bracket">$45,001 - $120,000: 32.5%</div>
+                                        <div class="bracket">$120,001 - $180,000: 37%</div>
+                                        <div class="bracket">$180,001+: 45%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
