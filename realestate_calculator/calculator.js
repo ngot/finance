@@ -44,7 +44,6 @@ class PropertyInvestmentCalculator {
             weeklyRent: 600,
             rentalGrowthRate: 3.0,
             propertyType: 'apartment',
-            yearBuilt: 2015,
             loanAmount: 640000,
             interestRate: 6.5,
             loanTerm: 30,
@@ -495,7 +494,6 @@ class PropertyInvestmentCalculator {
             weeklyRent: parseFloat(document.getElementById('weeklyRent').value) || 0,
             rentalGrowthRate: parseFloat(document.getElementById('rentalGrowthRate').value) || 0,
             propertyType: document.getElementById('propertyType').value,
-            yearBuilt: parseInt(document.getElementById('yearBuilt').value) || new Date().getFullYear(),
 
             // 贷款信息
             loanAmount: parseFloat(document.getElementById('loanAmount').value) || 0,
@@ -530,26 +528,6 @@ class PropertyInvestmentCalculator {
         return 0.45;
     }
 
-    calculateDepreciation(purchasePrice, yearBuilt, propertyType) {
-        const currentYear = new Date().getFullYear();
-        const propertyAge = currentYear - yearBuilt;
-        
-        // Division 43 - 建筑折旧 (2.5% per year for 40 years)
-        let buildingDepreciation = 0;
-        if (propertyAge < 40) {
-            const buildingValue = purchasePrice * 0.6; // 假设建筑占60%
-            buildingDepreciation = buildingValue * 0.025;
-        }
-
-        // Division 40 - 设备折旧
-        let equipmentDepreciation = 0;
-        if (propertyAge < 10) {
-            const equipmentValue = purchasePrice * 0.1; // 假设设备占10%
-            equipmentDepreciation = equipmentValue * 0.1; // 10年折旧完
-        }
-
-        return buildingDepreciation + equipmentDepreciation;
-    }
 
     calculateLoanPayments(loanAmount, interestRate, loanTerm, repaymentType) {
         const monthlyRate = interestRate / 100 / 12;
@@ -610,11 +588,8 @@ class PropertyInvestmentCalculator {
                 if (remainingLoan < 0) remainingLoan = 0;
             }
             
-            // 折旧
-            const depreciation = this.calculateDepreciation(inputs.purchasePrice, inputs.yearBuilt, inputs.propertyType);
-            
             // 可抵扣费用
-            const totalDeductions = totalOperatingExpenses + annualInterest + depreciation;
+            const totalDeductions = totalOperatingExpenses + annualInterest;
             
             // 应税收入
             const taxableIncome = rentalIncome - totalDeductions;
@@ -634,8 +609,7 @@ class PropertyInvestmentCalculator {
                 taxableIncome,
                 taxImpact,
                 netCashFlow,
-                totalDeductions,
-                depreciation
+                totalDeductions
             });
             
             // 更新下一年的租金
@@ -1058,10 +1032,6 @@ class PropertyInvestmentCalculator {
                                     <span class="detail-label">中介管理费</span>
                                     <span class="detail-value">${this.formatCurrency(managementFeesAmount)}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">折旧费用</span>
-                                    <span class="detail-value">${this.formatCurrency(year.depreciation)}</span>
-                                </div>
                                 <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
                                     <span class="detail-label"><strong>总抵扣费用</strong></span>
                                     <span class="detail-value"><strong>${this.formatCurrency(year.totalDeductions)}</strong></span>
@@ -1101,7 +1071,6 @@ class PropertyInvestmentCalculator {
         // 计算各项费用的累计金额
         let totalInterest = 0;
         let totalOperating = 0;
-        let totalDepreciation = 0;
         let totalDeductions = 0;
         
         yearlyAnalysis.forEach(year => {
@@ -1113,7 +1082,6 @@ class PropertyInvestmentCalculator {
             
             totalInterest += annualInterest;
             totalOperating += operatingExpenses;
-            totalDepreciation += year.depreciation;
             totalDeductions += year.totalDeductions;
         });
         
@@ -1134,13 +1102,6 @@ class PropertyInvestmentCalculator {
                         <div class="category-amount">${this.formatCurrency(totalOperating)}</div>
                         <div class="category-percentage">${((totalOperating / totalDeductions) * 100).toFixed(1)}%</div>
                         <small>物业费、市政费、保险等</small>
-                    </div>
-                    
-                    <div class="category-card">
-                        <h6>折旧费用</h6>
-                        <div class="category-amount">${this.formatCurrency(totalDepreciation)}</div>
-                        <div class="category-percentage">${((totalDepreciation / totalDeductions) * 100).toFixed(1)}%</div>
-                        <small>建筑和设备折旧</small>
                     </div>
                 </div>
                 
@@ -1173,15 +1134,6 @@ class PropertyInvestmentCalculator {
                         </div>
                     </div>
                 </div>
-                
-                <div class="depreciation-details">
-                    <h6>折旧费用说明</h6>
-                    <div class="depreciation-info">
-                        <p><strong>建筑折旧 (Division 43):</strong> ${inputs.yearBuilt >= 1987 ? '适用' : '不适用'}</p>
-                        <p><strong>设备折旧 (Division 40):</strong> ${new Date().getFullYear() - inputs.yearBuilt < 10 ? '适用' : '已过期'}</p>
-                        <p><strong>年度折旧:</strong> ${this.formatCurrency(yearlyAnalysis[0]?.depreciation || 0)}</p>
-                    </div>
-                </div>
             </div>
         `;
         
@@ -1211,7 +1163,6 @@ function loadExampleData() {
         weeklyRent: 600,
         rentalGrowthRate: 3.0,
         propertyType: 'apartment',
-        yearBuilt: 2015,
         loanAmount: 640000,
         interestRate: 6.5,
         loanTerm: 30,
@@ -1275,11 +1226,559 @@ function switchTab(tabName) {
     event.target.classList.add('active');
 }
 
+// 通用弹窗控制函数
+function openDetailModal(config) {
+    if (!window.calculator || !window.calculator.currentYearlyAnalysis) {
+        alert('请先计算投资回报以查看详细信息');
+        return;
+    }
+    
+    // 设置弹窗标题和内容
+    document.getElementById('modalTitle').textContent = config.title;
+    document.getElementById('modalSummaryTitle').textContent = config.summaryTitle;
+    document.getElementById('modalSummaryAmount').textContent = config.summaryAmount;
+    
+    // 生成摘要详情
+    const summaryDetails = document.getElementById('modalSummaryDetails');
+    summaryDetails.innerHTML = config.summaryDetails || '';
+    
+    // 生成标签页
+    const tabsContainer = document.getElementById('modalTabs');
+    tabsContainer.innerHTML = config.tabs.map((tab, index) => 
+        `<button class="tab-btn ${index === 0 ? 'active' : ''}" onclick="switchDetailTab('${tab.id}')">${tab.name}</button>`
+    ).join('');
+    
+    // 生成标签页内容
+    const contentContainer = document.getElementById('modalTabContent');
+    contentContainer.innerHTML = config.tabs.map((tab, index) => 
+        `<div id="${tab.id}" class="tab-pane ${index === 0 ? 'active' : ''}">${tab.content}</div>`
+    ).join('');
+    
+    // 显示弹窗
+    document.getElementById('detailModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function switchDetailTab(tabId) {
+    // 隐藏所有标签页
+    document.querySelectorAll('#modalTabContent .tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+    });
+    
+    // 移除所有按钮的active状态
+    document.querySelectorAll('#modalTabs .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // 显示选中的标签页
+    document.getElementById(tabId).classList.add('active');
+    
+    // 激活对应的按钮
+    event.target.classList.add('active');
+}
+
+// 各个指标的弹窗函数
+function openInitialInvestmentModal() {
+    const inputs = window.calculator.currentInputs;
+    const downPayment = inputs.purchasePrice - inputs.loanAmount;
+    const totalInitial = downPayment + inputs.purchaseCosts;
+    
+    const config = {
+        title: '初始投资总额详细分析',
+        summaryTitle: '初始投资总额',
+        summaryAmount: window.calculator.formatCurrency(totalInitial),
+        summaryDetails: `
+            <span>首付款: <strong>${window.calculator.formatCurrency(downPayment)}</strong></span>
+            <span>购买成本: <strong>${window.calculator.formatCurrency(inputs.purchaseCosts)}</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'initialBreakdown',
+                name: '费用分解',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>初始投资构成</h5>
+                        <div class="breakdown-categories">
+                            <div class="category-card">
+                                <h6>首付款</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(downPayment)}</div>
+                                <div class="category-percentage">${((downPayment / totalInitial) * 100).toFixed(1)}%</div>
+                                <small>房产价格减去贷款金额</small>
+                            </div>
+                            <div class="category-card">
+                                <h6>购买成本</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(inputs.purchaseCosts)}</div>
+                                <div class="category-percentage">${((inputs.purchaseCosts / totalInitial) * 100).toFixed(1)}%</div>
+                                <small>印花税、律师费、过户费等</small>
+                            </div>
+                        </div>
+                        <div class="calculation-summary">
+                            <div class="detail-item">
+                                <span class="detail-label">房产价格</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(inputs.purchasePrice)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">贷款金额</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(inputs.loanAmount)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">贷款比例 (LVR)</span>
+                                <span class="detail-value">${((inputs.loanAmount / inputs.purchasePrice) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                                <span class="detail-label"><strong>初始投资总额</strong></span>
+                                <span class="detail-value"><strong>${window.calculator.formatCurrency(totalInitial)}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'initialTips',
+                name: '投资建议',
+                content: `
+                    <div class="tax-explanation-detailed">
+                        <h5>初始投资优化建议</h5>
+                        <div class="explanation-section">
+                            <h6>1. 贷款比例 (LVR) 考虑</h6>
+                            <p>当前LVR: ${((inputs.loanAmount / inputs.purchasePrice) * 100).toFixed(1)}%</p>
+                            <ul>
+                                <li><strong>80%以下:</strong> 避免贷款保险费用</li>
+                                <li><strong>80-95%:</strong> 需要支付LMI (贷款保险)</li>
+                                <li><strong>建议:</strong> ${inputs.loanAmount / inputs.purchasePrice <= 0.8 ? '当前LVR较为理想' : '考虑增加首付以降低LVR'}</li>
+                            </ul>
+                        </div>
+                        <div class="explanation-section">
+                            <h6>2. 购买成本优化</h6>
+                            <ul>
+                                <li><strong>印花税:</strong> 各州税率不同，首次购房可能有优惠</li>
+                                <li><strong>律师费:</strong> 货比三家，选择性价比高的服务</li>
+                                <li><strong>房屋检查:</strong> 必要的投资，避免后续大额维修</li>
+                                <li><strong>贷款费用:</strong> 比较不同银行的费用和利率</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
+}
+
+function openCapitalGrowthModal() {
+    const inputs = window.calculator.currentInputs;
+    const yearlyAnalysis = window.calculator.currentYearlyAnalysis;
+    const futureValue = inputs.purchasePrice * Math.pow(1 + inputs.capitalGrowthRate / 100, inputs.holdingPeriod);
+    const capitalGain = futureValue - inputs.purchasePrice - inputs.purchaseCosts;
+    
+    const config = {
+        title: '总资本增值详细分析',
+        summaryTitle: '总资本增值',
+        summaryAmount: window.calculator.formatCurrency(capitalGain),
+        summaryDetails: `
+            <span>购买价格: <strong>${window.calculator.formatCurrency(inputs.purchasePrice)}</strong></span>
+            <span>预计售价: <strong>${window.calculator.formatCurrency(futureValue)}</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'capitalBreakdown',
+                name: '增值分解',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>资本增值构成</h5>
+                        <div class="calculation-summary">
+                            <div class="detail-item">
+                                <span class="detail-label">初始购买价格</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(inputs.purchasePrice)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">年度增值率</span>
+                                <span class="detail-value">${inputs.capitalGrowthRate.toFixed(1)}%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">持有年限</span>
+                                <span class="detail-value">${inputs.holdingPeriod}年</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">预计售价</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(futureValue)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">减：购买成本</span>
+                                <span class="detail-value">-${window.calculator.formatCurrency(inputs.purchaseCosts)}</span>
+                            </div>
+                            <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                                <span class="detail-label"><strong>净资本增值</strong></span>
+                                <span class="detail-value"><strong>${window.calculator.formatCurrency(capitalGain)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="breakdown-categories">
+                            <div class="category-card">
+                                <h6>年化增值率</h6>
+                                <div class="category-amount">${inputs.capitalGrowthRate.toFixed(1)}%</div>
+                                <div class="category-percentage">复合增长</div>
+                                <small>基于历史数据预测</small>
+                            </div>
+                            <div class="category-card">
+                                <h6>总增值倍数</h6>
+                                <div class="category-amount">${(futureValue / inputs.purchasePrice).toFixed(2)}x</div>
+                                <div class="category-percentage">${inputs.holdingPeriod}年</div>
+                                <small>房产价值增长倍数</small>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'capitalTips',
+                name: '增值分析',
+                content: `
+                    <div class="tax-explanation-detailed">
+                        <h5>资本增值影响因素</h5>
+                        <div class="explanation-section">
+                            <h6>1. 市场因素</h6>
+                            <ul>
+                                <li><strong>地段位置:</strong> 交通便利、学区、商圈等</li>
+                                <li><strong>供需关系:</strong> 人口增长、住房供应量</li>
+                                <li><strong>基础设施:</strong> 新建地铁、学校、医院等</li>
+                                <li><strong>经济环境:</strong> 利率、就业率、GDP增长</li>
+                            </ul>
+                        </div>
+                        <div class="explanation-section">
+                            <h6>2. 风险提示</h6>
+                            <ul>
+                                <li><strong>市场波动:</strong> 房价可能出现周期性调整</li>
+                                <li><strong>政策影响:</strong> 税收、贷款政策变化</li>
+                                <li><strong>预测局限:</strong> 长期预测存在不确定性</li>
+                                <li><strong>建议:</strong> 保守估计，做好风险准备</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
+}
+
+function openRentalIncomeModal() {
+    const inputs = window.calculator.currentInputs;
+    const yearlyAnalysis = window.calculator.currentYearlyAnalysis;
+    const totalRentalIncome = yearlyAnalysis.reduce((sum, year) => sum + year.rentalIncome, 0);
+    
+    const config = {
+        title: '累计租金收入详细分析',
+        summaryTitle: '累计租金收入',
+        summaryAmount: window.calculator.formatCurrency(totalRentalIncome),
+        summaryDetails: `
+            <span>初始周租金: <strong>${window.calculator.formatCurrency(inputs.weeklyRent)}</strong></span>
+            <span>年增长率: <strong>${inputs.rentalGrowthRate.toFixed(1)}%</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'rentalBreakdown',
+                name: '租金明细',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>年度租金收入明细</h5>
+                        ${yearlyAnalysis.map(year => `
+                            <div class="year-detail-card">
+                                <div class="year-header">
+                                    <span class="year-title">第${year.year}年</span>
+                                    <span class="year-benefit-amount positive">${window.calculator.formatCurrency(year.rentalIncome)}</span>
+                                </div>
+                                <div class="year-details">
+                                    <div class="calculation-summary">
+                                        <div class="detail-item">
+                                            <span class="detail-label">周租金</span>
+                                            <span class="detail-value">${window.calculator.formatCurrency(year.rentalIncome / 52)}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">月租金</span>
+                                            <span class="detail-value">${window.calculator.formatCurrency(year.rentalIncome / 12)}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">年租金</span>
+                                            <span class="detail-value">${window.calculator.formatCurrency(year.rentalIncome)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `
+            },
+            {
+                id: 'rentalTips',
+                name: '租金优化',
+                content: `
+                    <div class="tax-explanation-detailed">
+                        <h5>租金收入优化策略</h5>
+                        <div class="explanation-section">
+                            <h6>1. 提高租金收入</h6>
+                            <ul>
+                                <li><strong>房屋装修:</strong> 适度装修提升租金水平</li>
+                                <li><strong>设施完善:</strong> 空调、洗碗机等增值设施</li>
+                                <li><strong>定期调整:</strong> 根据市场行情调整租金</li>
+                                <li><strong>优质租客:</strong> 稳定租客减少空置期</li>
+                            </ul>
+                        </div>
+                        <div class="explanation-section">
+                            <h6>2. 租金收益率</h6>
+                            <p>当前毛租金收益率: ${((inputs.weeklyRent * 52 / inputs.purchasePrice) * 100).toFixed(2)}%</p>
+                            <ul>
+                                <li><strong>优秀:</strong> 6%以上</li>
+                                <li><strong>良好:</strong> 4-6%</li>
+                                <li><strong>一般:</strong> 3-4%</li>
+                                <li><strong>偏低:</strong> 3%以下</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
+}
+
+function openAfterTaxReturnModal() {
+    const inputs = window.calculator.currentInputs;
+    const yearlyAnalysis = window.calculator.currentYearlyAnalysis;
+    const capitalGains = window.calculator.calculateCapitalGains(inputs);
+    const summary = window.calculator.calculateSummary(inputs, yearlyAnalysis, capitalGains);
+    
+    const config = {
+        title: '税后总回报详细分析',
+        summaryTitle: '税后总回报',
+        summaryAmount: window.calculator.formatCurrency(summary.totalAfterTaxReturn),
+        summaryDetails: `
+            <span>投资期限: <strong>${inputs.holdingPeriod}年</strong></span>
+            <span>总投入: <strong>${window.calculator.formatCurrency(summary.totalInitialInvestment)}</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'returnBreakdown',
+                name: '回报构成',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>税后总回报构成</h5>
+                        <div class="breakdown-categories">
+                            <div class="category-card">
+                                <h6>租金收入</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(summary.totalRentalIncome)}</div>
+                                <div class="category-percentage">${((summary.totalRentalIncome / (summary.totalRentalIncome + capitalGains.netCapitalGain)) * 100).toFixed(1)}%</div>
+                                <small>累计租金收入</small>
+                            </div>
+                            <div class="category-card">
+                                <h6>资本增值</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(capitalGains.netCapitalGain)}</div>
+                                <div class="category-percentage">${((capitalGains.netCapitalGain / (summary.totalRentalIncome + capitalGains.netCapitalGain)) * 100).toFixed(1)}%</div>
+                                <small>扣除CGT后净增值</small>
+                            </div>
+                        </div>
+                        <div class="calculation-summary">
+                            <div class="detail-item">
+                                <span class="detail-label">初始投资</span>
+                                <span class="detail-value">-${window.calculator.formatCurrency(summary.totalInitialInvestment)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">累计租金收入</span>
+                                <span class="detail-value">+${window.calculator.formatCurrency(summary.totalRentalIncome)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">净资本增值</span>
+                                <span class="detail-value">+${window.calculator.formatCurrency(capitalGains.netCapitalGain)}</span>
+                            </div>
+                            <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                                <span class="detail-label"><strong>税后总回报</strong></span>
+                                <span class="detail-value"><strong>${window.calculator.formatCurrency(summary.totalAfterTaxReturn)}</strong></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">回报倍数</span>
+                                <span class="detail-value">${((summary.totalAfterTaxReturn + summary.totalInitialInvestment) / summary.totalInitialInvestment).toFixed(2)}x</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
+}
+
+function openIrrModal() {
+    const inputs = window.calculator.currentInputs;
+    const yearlyAnalysis = window.calculator.currentYearlyAnalysis;
+    const capitalGains = window.calculator.calculateCapitalGains(inputs);
+    const summary = window.calculator.calculateSummary(inputs, yearlyAnalysis, capitalGains);
+    
+    const config = {
+        title: '年化回报率 (IRR) 详细分析',
+        summaryTitle: '年化回报率 (IRR)',
+        summaryAmount: `${(summary.irr * 100).toFixed(2)}%`,
+        summaryDetails: `
+            <span>投资期限: <strong>${inputs.holdingPeriod}年</strong></span>
+            <span>考虑所有现金流: <strong>是</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'irrBreakdown',
+                name: 'IRR计算',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>IRR现金流分析</h5>
+                        <div class="calculation-summary">
+                            <div class="detail-item">
+                                <span class="detail-label">第0年 (初始投资)</span>
+                                <span class="detail-value">-${window.calculator.formatCurrency(summary.totalInitialInvestment)}</span>
+                            </div>
+                            ${yearlyAnalysis.map((year, index) => `
+                                <div class="detail-item">
+                                    <span class="detail-label">第${year.year}年现金流</span>
+                                    <span class="detail-value">${window.calculator.formatCurrency(year.netCashFlow + (index === yearlyAnalysis.length - 1 ? capitalGains.netCapitalGain : 0))}</span>
+                                </div>
+                            `).join('')}
+                            <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                                <span class="detail-label"><strong>年化回报率 (IRR)</strong></span>
+                                <span class="detail-value"><strong>${(summary.irr * 100).toFixed(2)}%</strong></span>
+                            </div>
+                        </div>
+                        <div class="breakdown-categories">
+                            <div class="category-card">
+                                <h6>IRR评级</h6>
+                                <div class="category-amount">${summary.irr > 0.12 ? '优秀' : summary.irr > 0.08 ? '良好' : summary.irr > 0.05 ? '一般' : '偏低'}</div>
+                                <div class="category-percentage">${(summary.irr * 100).toFixed(2)}%</div>
+                                <small>基于澳洲房产投资标准</small>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
+}
+
+function openTotalDeductionsModal() {
+    const inputs = window.calculator.currentInputs;
+    const yearlyAnalysis = window.calculator.currentYearlyAnalysis;
+    const summary = window.calculator.calculateSummary(inputs, yearlyAnalysis, {});
+    
+    // 重用税务优惠弹窗的抵扣分解逻辑
+    window.calculator.generateModalContent(yearlyAnalysis, inputs);
+    document.getElementById('taxBenefitsModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // 切换到抵扣分解标签页
+    setTimeout(() => {
+        const tabs = document.querySelectorAll('#taxBenefitsModal .tab-btn');
+        const panes = document.querySelectorAll('#taxBenefitsModal .tab-pane');
+        
+        tabs.forEach(tab => tab.classList.remove('active'));
+        panes.forEach(pane => pane.classList.remove('active'));
+        
+        tabs[1].classList.add('active'); // 抵扣分解标签页
+        panes[1].classList.add('active');
+    }, 100);
+}
+
+function openCgtModal() {
+    const inputs = window.calculator.currentInputs;
+    const capitalGains = window.calculator.calculateCapitalGains(inputs);
+    const marginalTaxRate = window.calculator.calculateMarginalTaxRate(inputs.personalIncome);
+    
+    const config = {
+        title: '资本利得税 (CGT) 详细分析',
+        summaryTitle: '预计资本利得税',
+        summaryAmount: window.calculator.formatCurrency(capitalGains.cgtTax),
+        summaryDetails: `
+            <span>资本利得: <strong>${window.calculator.formatCurrency(capitalGains.capitalGain)}</strong></span>
+            <span>CGT折扣: <strong>${capitalGains.cgtDiscount ? '50%' : '无'}</strong></span>
+        `,
+        tabs: [
+            {
+                id: 'cgtBreakdown',
+                name: 'CGT计算',
+                content: `
+                    <div class="breakdown-summary">
+                        <h5>资本利得税计算过程</h5>
+                        <div class="calculation-summary">
+                            <div class="detail-item">
+                                <span class="detail-label">出售价格</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(capitalGains.futureValue)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">减：购买价格</span>
+                                <span class="detail-value">-${window.calculator.formatCurrency(inputs.purchasePrice)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">减：购买成本</span>
+                                <span class="detail-value">-${window.calculator.formatCurrency(inputs.purchaseCosts)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">资本利得</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(capitalGains.capitalGain)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">CGT折扣 (${capitalGains.cgtDiscount ? '50%' : '0%'})</span>
+                                <span class="detail-value">-${window.calculator.formatCurrency(capitalGains.capitalGain - capitalGains.taxableCapitalGain)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">应税资本利得</span>
+                                <span class="detail-value">${window.calculator.formatCurrency(capitalGains.taxableCapitalGain)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">边际税率</span>
+                                <span class="detail-value">${(marginalTaxRate * 100).toFixed(1)}%</span>
+                            </div>
+                            <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                                <span class="detail-label"><strong>应缴CGT</strong></span>
+                                <span class="detail-value"><strong>${window.calculator.formatCurrency(capitalGains.cgtTax)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="breakdown-categories">
+                            <div class="category-card">
+                                <h6>CGT折扣</h6>
+                                <div class="category-amount">${capitalGains.cgtDiscount ? '50%' : '0%'}</div>
+                                <div class="category-percentage">${inputs.holdingPeriod > 1 ? '适用' : '不适用'}</div>
+                                <small>持有超过12个月</small>
+                            </div>
+                            <div class="category-card">
+                                <h6>节税金额</h6>
+                                <div class="category-amount">${window.calculator.formatCurrency(capitalGains.capitalGain - capitalGains.taxableCapitalGain)}</div>
+                                <div class="category-percentage">CGT折扣</div>
+                                <small>相比无折扣情况</small>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ]
+    };
+    
+    openDetailModal(config);
+}
+
 // 点击弹窗外部关闭
 window.addEventListener('click', function(event) {
-    const modal = document.getElementById('taxBenefitsModal');
-    if (event.target === modal) {
+    const taxModal = document.getElementById('taxBenefitsModal');
+    const detailModal = document.getElementById('detailModal');
+    
+    if (event.target === taxModal) {
         closeTaxBenefitsModal();
+    }
+    if (event.target === detailModal) {
+        closeDetailModal();
     }
 });
 

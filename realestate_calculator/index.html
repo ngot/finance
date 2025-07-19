@@ -67,10 +67,6 @@
                         <option value="townhouse">联排别墅</option>
                     </select>
                 </div>
-                <div class="input-row">
-                    <label for="yearBuilt">建造年份</label>
-                    <input type="number" id="yearBuilt" placeholder="例如: 2010">
-                </div>
             </div>
 
             <!-- 贷款信息 -->
@@ -163,9 +159,12 @@
             <div class="result-group">
                 <h3>投资概览</h3>
                 <div class="overview-grid">
-                    <div class="overview-item">
-                        <span class="label">初始投资总额</span>
-                        <span class="value" id="totalInitialInvestment">-</span>
+                    <div class="overview-item clickable-item" onclick="openInitialInvestmentModal()">
+                        <div class="item-content">
+                            <span class="label">初始投资总额</span>
+                            <span class="value" id="totalInitialInvestment">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
                     <div class="overview-item">
                         <span class="label">预计持有年限</span>
@@ -190,13 +189,19 @@
             <div class="result-group">
                 <h3>投资回报分析</h3>
                 <div class="return-grid">
-                    <div class="return-item">
-                        <span class="label">总资本增值</span>
-                        <span class="value" id="totalCapitalGrowth">-</span>
+                    <div class="return-item clickable-item" onclick="openCapitalGrowthModal()">
+                        <div class="item-content">
+                            <span class="label">总资本增值</span>
+                            <span class="value" id="totalCapitalGrowth">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
-                    <div class="return-item">
-                        <span class="label">累计租金收入</span>
-                        <span class="value" id="totalRentalIncome">-</span>
+                    <div class="return-item clickable-item" onclick="openRentalIncomeModal()">
+                        <div class="item-content">
+                            <span class="label">累计租金收入</span>
+                            <span class="value" id="totalRentalIncome">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
                     <div class="return-item tax-benefits-item">
                         <div class="tax-benefits-header" onclick="openTaxBenefitsModal()">
@@ -207,13 +212,19 @@
                             <span class="detail-icon">🔍</span>
                         </div>
                     </div>
-                    <div class="return-item">
-                        <span class="label">税后总回报</span>
-                        <span class="value" id="totalAfterTaxReturn">-</span>
+                    <div class="return-item clickable-item" onclick="openAfterTaxReturnModal()">
+                        <div class="item-content">
+                            <span class="label">税后总回报</span>
+                            <span class="value" id="totalAfterTaxReturn">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
-                    <div class="return-item">
-                        <span class="label">年化回报率 (IRR)</span>
-                        <span class="value" id="irr">-</span>
+                    <div class="return-item clickable-item" onclick="openIrrModal()">
+                        <div class="item-content">
+                            <span class="label">年化回报率 (IRR)</span>
+                            <span class="value" id="irr">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
                 </div>
             </div>
@@ -222,13 +233,19 @@
             <div class="result-group">
                 <h3>税务总结</h3>
                 <div class="tax-summary">
-                    <div class="tax-item">
-                        <span class="label">累计可抵扣费用</span>
-                        <span class="value" id="totalDeductions">-</span>
+                    <div class="tax-item clickable-item" onclick="openTotalDeductionsModal()">
+                        <div class="item-content">
+                            <span class="label">累计可抵扣费用</span>
+                            <span class="value" id="totalDeductions">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
-                    <div class="tax-item">
-                        <span class="label">预计资本利得税 (CGT)</span>
-                        <span class="value" id="capitalGainsTax">-</span>
+                    <div class="tax-item clickable-item" onclick="openCgtModal()">
+                        <div class="item-content">
+                            <span class="label">预计资本利得税 (CGT)</span>
+                            <span class="value" id="capitalGainsTax">-</span>
+                        </div>
+                        <span class="detail-icon">🔍</span>
                     </div>
                     <div class="tax-item">
                         <span class="label">CGT折扣适用</span>
@@ -344,6 +361,35 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通用详情弹窗 -->
+        <div id="detailModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">详细信息</h3>
+                    <span class="close-btn" onclick="closeDetailModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-summary">
+                        <div class="summary-card">
+                            <h4 id="modalSummaryTitle">-</h4>
+                            <div class="summary-amount" id="modalSummaryAmount">-</div>
+                            <div class="summary-details" id="modalSummaryDetails">
+                                <!-- 动态生成摘要详情 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-tabs" id="modalTabs">
+                        <!-- 动态生成标签页 -->
+                    </div>
+                    
+                    <div class="tab-content" id="modalTabContent">
+                        <!-- 动态生成标签页内容 -->
                     </div>
                 </div>
             </div>
