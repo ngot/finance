@@ -1016,8 +1016,9 @@ class PropertyInvestmentCalculator {
         });
         
         // 更新弹窗摘要
+        const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
         document.getElementById('modalTotalBenefits').textContent = this.formatCurrency(totalBenefits);
-        document.getElementById('modalBenefitYears').textContent = `${benefitYears}年`;
+        document.getElementById('modalBenefitYears').textContent = `${benefitYears} ${t('years')}`;
         document.getElementById('modalTaxRate').textContent = `${(marginalTaxRate * 100).toFixed(1)}%`;
         
         // 生成年度明细
@@ -1030,6 +1031,7 @@ class PropertyInvestmentCalculator {
     generateYearlyDetail(yearlyAnalysis, inputs) {
         const marginalTaxRate = this.calculateMarginalTaxRate(inputs.personalIncome);
         const container = document.getElementById('yearlyDetailContent');
+        const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
         
         let html = '';
         
@@ -1049,71 +1051,71 @@ class PropertyInvestmentCalculator {
             html += `
                 <div class="year-detail-card">
                     <div class="year-header">
-                        <span class="year-title">第${year.year}年</span>
+                        <span class="year-title">${t('year')} ${year.year}</span>
                         <span class="year-benefit-amount ${hasBenefit ? 'positive' : 'zero'}">
-                            ${hasBenefit ? this.formatCurrency(benefit) : '无优惠'}
+                            ${hasBenefit ? this.formatCurrency(benefit) : t('no') + ' ' + t('total_tax_benefits')}
                         </span>
                     </div>
                     <div class="year-details">
                         <div class="detail-grid">
                             <div class="detail-section">
-                                <h6>收入明细</h6>
+                                <h6>${t('rental_income')} ${t('expense_breakdown')}</h6>
                                 <div class="detail-item">
-                                    <span class="detail-label">租金收入</span>
+                                    <span class="detail-label">${t('rental_income')}</span>
                                     <span class="detail-value">${this.formatCurrency(year.rentalIncome)}</span>
                                 </div>
                             </div>
                             <div class="detail-section">
-                                <h6>抵扣费用明细</h6>
+                                <h6>${t('deduction_breakdown')} ${t('expense_breakdown')}</h6>
                                 <div class="detail-item">
-                                    <span class="detail-label">贷款利息</span>
+                                    <span class="detail-label">${t('loan_interest')}</span>
                                     <span class="detail-value">${this.formatCurrency(annualInterest)}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">物业管理费</span>
+                                    <span class="detail-label">${t('strata_fees')}</span>
                                     <span class="detail-value">${this.formatCurrency(inputs.strataFees)}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">市政费</span>
+                                    <span class="detail-label">${t('council_rates')}</span>
                                     <span class="detail-value">${this.formatCurrency(inputs.councilRates)}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">水费</span>
+                                    <span class="detail-label">${t('water_rates')}</span>
                                     <span class="detail-value">${this.formatCurrency(inputs.waterRates)}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">保险费</span>
+                                    <span class="detail-label">${t('insurance')}</span>
                                     <span class="detail-value">${this.formatCurrency(inputs.insurance)}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">维护费用</span>
+                                    <span class="detail-label">${t('maintenance')}</span>
                                     <span class="detail-value">${this.formatCurrency(inputs.maintenance)}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">中介管理费</span>
+                                    <span class="detail-label">${t('management_fees')}</span>
                                     <span class="detail-value">${this.formatCurrency(managementFeesAmount)}</span>
                                 </div>
                                 <div class="detail-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
-                                    <span class="detail-label"><strong>总抵扣费用</strong></span>
+                                    <span class="detail-label"><strong>${t('total_deductions')}</strong></span>
                                     <span class="detail-value"><strong>${this.formatCurrency(year.totalDeductions)}</strong></span>
                                 </div>
                             </div>
                         </div>
                         <div class="calculation-summary">
                             <div class="detail-item">
-                                <span class="detail-label">应税收入 (租金 - 抵扣)</span>
+                                <span class="detail-label">${t('rental_income')} - ${t('total_deductions')}</span>
                                 <span class="detail-value">${this.formatCurrency(year.taxableIncome)}</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">边际税率</span>
+                                <span class="detail-label">${t('marginal_tax_rate')}</span>
                                 <span class="detail-value">${(marginalTaxRate * 100).toFixed(1)}%</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label"><strong>税务影响</strong></span>
+                                <span class="detail-label"><strong>Tax Impact</strong></span>
                                 <span class="detail-value"><strong>
                                     ${hasBenefit ? 
-                                        `节税 ${this.formatCurrency(benefit)}` : 
-                                        `应缴税 ${this.formatCurrency(Math.abs(year.taxImpact))}`
+                                        `Tax Savings ${this.formatCurrency(benefit)}` : 
+                                        `Tax Payable ${this.formatCurrency(Math.abs(year.taxImpact))}`
                                     }
                                 </strong></span>
                             </div>
