@@ -2062,7 +2062,7 @@ function openIrrModal() {
                                 <div class="reason-analysis">
                                     <div class="reason-item">
                                         <h6>${window.languageManager.translate('cash_flow_insufficient')}</h6>
-                                        <p>${t('annual_net_cash_flow').replace('{status}', yearlyAnalysis.every(y => y.netCashFlow < 0) ? t('all_negative') : t('partially_negative'))}</p>
+                                        <p>${t('annual_net_cash_flow')} ${yearlyAnalysis.every(y => y.netCashFlow < 0) ? t('all_negative') : t('partially_negative')}</p>
                                         <p>${window.languageManager.translate('rental_cannot_cover_expenses')}</p>
                                     </div>
                                     
