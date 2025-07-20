@@ -1068,6 +1068,452 @@ header h1 {
 }
 
 /* 基准对比网格 */
+.benchmark-comparison-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.current-irr-display {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.irr-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.irr-value.positive {
+    color: #28a745;
+}
+
+.irr-value.negative {
+    color: #dc3545;
+}
+
+.benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.benchmark-item {
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.benchmark-item.current {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.benchmark-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.benchmark-value {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 8px 0;
+    color: #667eea;
+}
+
+.benchmark-item.current .benchmark-value {
+    color: white;
+}
+
+.benchmark-description {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.market-comparison {
+    margin: 30px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.market-rates {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rate-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: white;
+    border-radius: 6px;
+    border-left: 4px solid #e9ecef;
+}
+
+.rate-label {
+    font-weight: 500;
+    flex: 1;
+}
+
+.rate-value {
+    font-weight: 600;
+    color: #495057;
+    margin: 0 15px;
+}
+
+.rate-comparison {
+    font-size: 1.2rem;
+}
+
+.rate-comparison.better {
+    color: #28a745;
+}
+
+.rate-comparison.worse {
+    color: #dc3545;
+}
+
+.investment-recommendation {
+    margin: 30px 0;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.recommendation {
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid;
+}
+
+.recommendation.excellent {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.recommendation.good {
+    background: #d1ecf1;
+    border-color: #17a2b8;
+    color: #0c5460;
+}
+
+.recommendation.average {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+.recommendation.low {
+    background: #f8d7da;
+    border-color: #fd7e14;
+    color: #721c24;
+}
+
+.recommendation.loss {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+/* CGT情景分析样式 */
+.scenario-analysis {
+    margin: 25px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.scenario-analysis h6 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 8px;
+}
+
+.scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.scenario-item {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.scenario-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.scenario-item.current {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.scenario-item.current::before {
+    content: attr(data-current-label);
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255,255,255,0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.scenario-period {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #667eea;
+}
+
+.scenario-item.current .scenario-period {
+    color: white;
+}
+
+.scenario-discount {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.scenario-cgt {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 8px 0;
+    color: #dc3545;
+}
+
+.scenario-item.current .scenario-cgt {
+    color: #fff;
+}
+
+.scenario-savings {
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 600;
+}
+
+.scenario-item.current .scenario-savings {
+    color: #d4edda;
+}
+
+/* 收入情景分析样式 */
+.income-scenarios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.income-scenario {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    align-items: center;
+    padding: 15px 20px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.income-scenario:hover {
+    border-color: #667eea;
+    transform: translateX(5px);
+}
+
+.income-scenario.current {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.income-label {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.tax-rate {
+    background: #f8f9fa;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #495057;
+    min-width: 60px;
+    text-align: center;
+}
+
+.income-scenario.current .tax-rate {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.cgt-amount {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #dc3545;
+    min-width: 100px;
+    text-align: right;
+}
+
+.income-scenario.current .cgt-amount {
+    color: white;
+}
+
+/* 影响分析样式 */
+.impact-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.impact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.impact-item.current {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+    transform: scale(1.02);
+}
+
+.impact-item.savings {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border-color: #28a745;
+    transform: scale(1.02);
+}
+
+.impact-label {
+    font-weight: 600;
+    flex: 1;
+}
+
+.impact-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+    min-width: 120px;
+    text-align: right;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .scenarios-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .scenario-item {
+        padding: 12px;
+    }
+    
+    .income-scenario {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .tax-rate, .cgt-amount {
+        min-width: auto;
+        text-align: center;
+    }
+    
+    .impact-item {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .impact-value {
+        min-width: auto;
+        text-align: center;
+    }
+}
+
+/* 动画效果 */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scenario-analysis {
+    animation: slideInUp 0.5s ease-out;
+}
+
+.scenario-item, .income-scenario, .impact-item {
+    animation: slideInUp 0.3s ease-out;
+}
+
+/* 工具提示样式 */
+.scenario-item:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
 .benchmark-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
