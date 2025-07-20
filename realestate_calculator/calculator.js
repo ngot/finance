@@ -1146,52 +1146,58 @@ class PropertyInvestmentCalculator {
             totalDeductions += year.totalDeductions;
         });
         
+        const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
+        
         const html = `
             <div class="breakdown-summary">
-                <h5>累计抵扣费用分解 (${inputs.holdingPeriod}年)</h5>
+                <h5>${t('cumulative_deductible_expense_breakdown')} (${inputs.holdingPeriod} ${t('years')})</h5>
                 
                 <div class="breakdown-categories">
                     <div class="category-card">
-                        <h6>贷款利息</h6>
+                        <h6>${t('loan_interest')}</h6>
                         <div class="category-amount">${this.formatCurrency(totalInterest)}</div>
                         <div class="category-percentage">${((totalInterest / totalDeductions) * 100).toFixed(1)}%</div>
-                        <small>投资房贷款利息支出</small>
+                        <small>${t('investment_property_loan_interest')}</small>
                     </div>
                     
                     <div class="category-card">
-                        <h6>运营费用</h6>
+                        <h6>${t('operating_expenses')}</h6>
                         <div class="category-amount">${this.formatCurrency(totalOperating)}</div>
                         <div class="category-percentage">${((totalOperating / totalDeductions) * 100).toFixed(1)}%</div>
-                        <small>物业费、市政费、保险等</small>
+                        <small>${t('property_fees_council_insurance')}</small>
                     </div>
                 </div>
                 
                 <div class="breakdown-details">
-                    <h6>运营费用明细</h6>
+                    <h6>${t('operating_expenses')} ${t('expense_breakdown')}</h6>
                     <div class="detail-breakdown">
                         <div class="breakdown-item">
-                            <span>物业管理费</span>
+                            <span>${t('strata_fees')}</span>
                             <span>${this.formatCurrency(inputs.strataFees * inputs.holdingPeriod)}</span>
                         </div>
                         <div class="breakdown-item">
-                            <span>市政费</span>
+                            <span>${t('council_rates')}</span>
                             <span>${this.formatCurrency(inputs.councilRates * inputs.holdingPeriod)}</span>
                         </div>
                         <div class="breakdown-item">
-                            <span>水费</span>
+                            <span>${t('water_rates')}</span>
                             <span>${this.formatCurrency(inputs.waterRates * inputs.holdingPeriod)}</span>
                         </div>
                         <div class="breakdown-item">
-                            <span>保险费</span>
+                            <span>${t('insurance')}</span>
                             <span>${this.formatCurrency(inputs.insurance * inputs.holdingPeriod)}</span>
                         </div>
                         <div class="breakdown-item">
-                            <span>维护费用</span>
+                            <span>${t('maintenance')}</span>
                             <span>${this.formatCurrency(inputs.maintenance * inputs.holdingPeriod)}</span>
                         </div>
                         <div class="breakdown-item">
-                            <span>中介管理费</span>
+                            <span>${t('management_fees')}</span>
                             <span>${this.formatCurrency(yearlyAnalysis.reduce((sum, year) => sum + (year.rentalIncome * inputs.managementFees / 100), 0))}</span>
+                        </div>
+                        <div class="breakdown-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
+                            <span><strong>${t('total_deductions')}</strong></span>
+                            <span><strong>${this.formatCurrency(totalDeductions)}</strong></span>
                         </div>
                     </div>
                 </div>
@@ -2104,34 +2110,34 @@ function openTotalDeductionsModal() {
                         </div>
                         
                         <div class="breakdown-details">
-                            <h6>运营费用明细</h6>
+                            <h6>${t('operating_expenses')} ${t('expense_breakdown')}</h6>
                             <div class="detail-breakdown">
                                 <div class="breakdown-item">
-                                    <span>物业管理费</span>
+                                    <span>${t('strata_fees')}</span>
                                     <span>${window.calculator.formatCurrency(inputs.strataFees * inputs.holdingPeriod)}</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span>市政费</span>
+                                    <span>${t('council_rates')}</span>
                                     <span>${window.calculator.formatCurrency(inputs.councilRates * inputs.holdingPeriod)}</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span>水费</span>
+                                    <span>${t('water_rates')}</span>
                                     <span>${window.calculator.formatCurrency(inputs.waterRates * inputs.holdingPeriod)}</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span>保险费</span>
+                                    <span>${t('insurance')}</span>
                                     <span>${window.calculator.formatCurrency(inputs.insurance * inputs.holdingPeriod)}</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span>维护费用</span>
+                                    <span>${t('maintenance')}</span>
                                     <span>${window.calculator.formatCurrency(inputs.maintenance * inputs.holdingPeriod)}</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span>中介管理费</span>
+                                    <span>${t('management_fees')}</span>
                                     <span>${window.calculator.formatCurrency(yearlyAnalysis.reduce((sum, year) => sum + (year.rentalIncome * inputs.managementFees / 100), 0))}</span>
                                 </div>
                                 <div class="breakdown-item" style="border-top: 1px solid #dee2e6; padding-top: 8px; margin-top: 8px;">
-                                    <span><strong>累计可抵扣费用</strong></span>
+                                    <span><strong>${t('total_deductions')}</strong></span>
                                     <span><strong>${window.calculator.formatCurrency(totalDeductions)}</strong></span>
                                 </div>
                             </div>
@@ -2141,10 +2147,10 @@ function openTotalDeductionsModal() {
             },
             {
                 id: 'deductionsYearly',
-                name: '年度明细',
+                name: t('annual_breakdown'),
                 content: `
                     <div class="breakdown-summary">
-                        <h5>年度可抵扣费用明细</h5>
+                        <h5>${t('annual_breakdown')} - ${t('total_deductions')}</h5>
                         ${yearlyAnalysis.map(year => {
                             const loanPayments = window.calculator.calculateLoanPayments(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, inputs.repaymentType);
                             const annualInterest = loanPayments.monthlyInterest * 12;
@@ -2153,49 +2159,49 @@ function openTotalDeductionsModal() {
                             return `
                                 <div class="year-detail-card">
                                     <div class="year-header">
-                                        <span class="year-title">第${year.year}年</span>
+                                        <span class="year-title">${t('year')} ${year.year}</span>
                                         <span class="year-benefit-amount positive">${window.calculator.formatCurrency(year.totalDeductions)}</span>
                                     </div>
                                     <div class="year-details">
                                         <div class="detail-grid">
                                             <div class="detail-section">
-                                                <h6>贷款费用</h6>
+                                                <h6>${t('loan_interest')}</h6>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">贷款利息</span>
+                                                    <span class="detail-label">${t('loan_interest')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(annualInterest)}</span>
                                                 </div>
                                             </div>
                                             <div class="detail-section">
-                                                <h6>运营费用</h6>
+                                                <h6>${t('operating_expenses')}</h6>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">物业管理费</span>
+                                                    <span class="detail-label">${t('strata_fees')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(inputs.strataFees)}</span>
                                                 </div>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">市政费</span>
+                                                    <span class="detail-label">${t('council_rates')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(inputs.councilRates)}</span>
                                                 </div>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">水费</span>
+                                                    <span class="detail-label">${t('water_rates')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(inputs.waterRates)}</span>
                                                 </div>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">保险费</span>
+                                                    <span class="detail-label">${t('insurance')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(inputs.insurance)}</span>
                                                 </div>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">维护费用</span>
+                                                    <span class="detail-label">${t('maintenance')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(inputs.maintenance)}</span>
                                                 </div>
                                                 <div class="detail-item">
-                                                    <span class="detail-label">中介管理费</span>
+                                                    <span class="detail-label">${t('management_fees')}</span>
                                                     <span class="detail-value">${window.calculator.formatCurrency(managementFeesAmount)}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="calculation-summary">
                                             <div class="detail-item">
-                                                <span class="detail-label"><strong>年度可抵扣费用</strong></span>
+                                                <span class="detail-label"><strong>${t('total_deductions')} (${t('annual_rent')})</strong></span>
                                                 <span class="detail-value"><strong>${window.calculator.formatCurrency(year.totalDeductions)}</strong></span>
                                             </div>
                                         </div>
