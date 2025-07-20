@@ -1771,6 +1771,8 @@ function openIrrModal() {
     const capitalGains = window.calculator.calculateCapitalGains(inputs);
     const summary = window.calculator.calculateSummary(inputs, yearlyAnalysis, capitalGains);
     
+    const t = (key) => window.languageManager ? window.languageManager.translate(key) : key;
+    
     // 构建现金流数组用于详细分析
     const cashFlows = [-summary.totalInitialInvestment];
     yearlyAnalysis.forEach((year, index) => {
@@ -1934,16 +1936,16 @@ function openIrrModal() {
                         
                         <div class="breakdown-categories">
                             <div class="category-card">
-                                <h6>现金流特征</h6>
+                                <h6>${t('cash_flow_characteristics')}</h6>
                                 <div class="category-amount">${cashFlows.filter(f => f > 0).length}</div>
-                                <div class="category-percentage">正现金流年数</div>
-                                <small>共${cashFlows.length - 1}年投资期</small>
+                                <div class="category-percentage">${t('positive_cash_flow_years')}</div>
+                                <small>${t('total_investment_period').replace('{years}', cashFlows.length - 1)}</small>
                             </div>
                             <div class="category-card">
-                                <h6>回本时间</h6>
-                                <div class="category-amount">${cumulativeFlows.findIndex(cf => cf > 0) > 0 ? cumulativeFlows.findIndex(cf => cf > 0) : '未回本'}</div>
-                                <div class="category-percentage">${cumulativeFlows.findIndex(cf => cf > 0) > 0 ? '年' : ''}</div>
-                                <small>累计现金流转正时间</small>
+                                <h6>${t('payback_period')}</h6>
+                                <div class="category-amount">${cumulativeFlows.findIndex(cf => cf > 0) > 0 ? cumulativeFlows.findIndex(cf => cf > 0) : t('not_recovered')}</div>
+                                <div class="category-percentage">${cumulativeFlows.findIndex(cf => cf > 0) > 0 ? t('years') : ''}</div>
+                                <small>${t('cumulative_cash_flow_positive_time')}</small>
                             </div>
                         </div>
                     </div>
@@ -2060,7 +2062,7 @@ function openIrrModal() {
                                 <div class="reason-analysis">
                                     <div class="reason-item">
                                         <h6>${window.languageManager.translate('cash_flow_insufficient')}</h6>
-                                        <p>${window.languageManager.translate('annual_net_cash_flow').replace('{status}', yearlyAnalysis.every(y => y.netCashFlow < 0) ? window.languageManager.translate('all_negative') : window.languageManager.translate('partially_negative'))}</p>
+                                        <p>${t('annual_net_cash_flow').replace('{status}', yearlyAnalysis.every(y => y.netCashFlow < 0) ? t('all_negative') : t('partially_negative'))}</p>
                                         <p>${window.languageManager.translate('rental_cannot_cover_expenses')}</p>
                                     </div>
                                     
@@ -2312,40 +2314,40 @@ function openTotalDeductionsModal() {
             },
             {
                 id: 'deductionsTips',
-                name: '抵扣优化',
+                name: t('deduction_optimization'),
                 content: `
                     <div class="tax-explanation-detailed">
-                        <h5>可抵扣费用优化建议</h5>
+                        <h5>${t('deductible_expenses_optimization_suggestions')}</h5>
                         
                         <div class="explanation-section">
-                            <h6>1. 主要可抵扣费用类别</h6>
+                            <h6>1. ${t('main_deductible_expense_categories')}</h6>
                             <ul>
-                                <li><strong>贷款利息:</strong> 投资房贷款的利息部分可全额抵扣</li>
-                                <li><strong>物业管理费:</strong> 公寓的strata fees等物业费用</li>
-                                <li><strong>市政费用:</strong> council rates, water rates等政府费用</li>
-                                <li><strong>保险费用:</strong> 房东保险premiums</li>
-                                <li><strong>维护费用:</strong> 修理和维护成本</li>
-                                <li><strong>中介费用:</strong> 租赁管理费用</li>
+                                <li><strong>${t('loan_interest')}:</strong> ${t('loan_interest_desc')}</li>
+                                <li><strong>${t('property_management_fees')}:</strong> ${t('property_management_fees_desc')}</li>
+                                <li><strong>${t('council_fees')}:</strong> ${t('council_fees_desc')}</li>
+                                <li><strong>${t('insurance_costs')}:</strong> ${t('insurance_costs_desc')}</li>
+                                <li><strong>${t('maintenance_costs')}:</strong> ${t('maintenance_costs_desc')}</li>
+                                <li><strong>${t('agent_fees')}:</strong> ${t('agent_fees_desc')}</li>
                             </ul>
                         </div>
                         
                         <div class="explanation-section">
-                            <h6>2. 抵扣优化策略</h6>
+                            <h6>2. ${t('deduction_optimization_strategies')}</h6>
                             <ul>
-                                <li><strong>记录保存:</strong> 保留所有费用收据和发票</li>
-                                <li><strong>专业咨询:</strong> 定期咨询税务顾问</li>
-                                <li><strong>费用分类:</strong> 区分可抵扣和不可抵扣费用</li>
-                                <li><strong>时间规划:</strong> 合理安排维修和改善时间</li>
+                                <li><strong>${t('record_keeping')}:</strong> ${t('record_keeping_desc')}</li>
+                                <li><strong>${t('professional_consultation')}:</strong> ${t('professional_consultation_desc')}</li>
+                                <li><strong>${t('expense_classification')}:</strong> ${t('expense_classification_desc')}</li>
+                                <li><strong>${t('timing_planning')}:</strong> ${t('timing_planning_desc')}</li>
                             </ul>
                         </div>
                         
                         <div class="explanation-section">
-                            <h6>3. 注意事项</h6>
+                            <h6>3. ${t('important_notes')}</h6>
                             <ul>
-                                <li><strong>资本性支出:</strong> 大型改善项目可能不能立即抵扣</li>
-                                <li><strong>个人使用:</strong> 如有个人使用需按比例计算</li>
-                                <li><strong>ATO规定:</strong> 遵循澳洲税务局最新规定</li>
-                                <li><strong>专业建议:</strong> 复杂情况建议咨询专业人士</li>
+                                <li><strong>${t('capital_expenditure')}:</strong> ${t('capital_expenditure_desc')}</li>
+                                <li><strong>${t('personal_use')}:</strong> ${t('personal_use_desc')}</li>
+                                <li><strong>${t('ato_regulations')}:</strong> ${t('ato_regulations_desc')}</li>
+                                <li><strong>${t('professional_advice')}:</strong> ${t('professional_advice_desc')}</li>
                             </ul>
                         </div>
                     </div>
