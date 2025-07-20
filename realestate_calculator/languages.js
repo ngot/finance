@@ -294,6 +294,11 @@ const translations = {
         iterate_solve_irr: "3. Iterate to solve IRR",
         numerical_method_find_rate: "Use numerical method to find the rate that makes NPV=0",
         
+        // Tax Impact Labels
+        tax_impact: "Tax Impact",
+        tax_savings: "Tax Savings",
+        tax_payable: "Tax Payable",
+        
         // Selling Recommendations
         selling_recommendation_intro: "Based on your investment assumptions, here are the optimal selling time recommendations:",
         cgt_discount_benefit: "CGT 50% Discount Benefit",
@@ -633,6 +638,11 @@ const translations = {
         npv_equals_zero: "NPV = 0",
         iterate_solve_irr: "3. 迭代求解IRR",
         numerical_method_find_rate: "使用数值方法找到使NPV=0的利率",
+        
+        // Tax Impact Labels
+        tax_impact: "税务影响",
+        tax_savings: "节税",
+        tax_payable: "应缴税",
         
         // Selling Recommendations
         selling_recommendation_intro: "根据您的投资假设，以下是最佳出售时机建议：",

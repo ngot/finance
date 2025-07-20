@@ -1111,11 +1111,11 @@ class PropertyInvestmentCalculator {
                                 <span class="detail-value">${(marginalTaxRate * 100).toFixed(1)}%</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label"><strong>Tax Impact</strong></span>
+                                <span class="detail-label"><strong>${t('tax_impact')}</strong></span>
                                 <span class="detail-value"><strong>
                                     ${hasBenefit ? 
-                                        `Tax Savings ${this.formatCurrency(benefit)}` : 
-                                        `Tax Payable ${this.formatCurrency(Math.abs(year.taxImpact))}`
+                                        `${t('tax_savings')} ${this.formatCurrency(benefit)}` : 
+                                        `${t('tax_payable')} ${this.formatCurrency(Math.abs(year.taxImpact))}`
                                     }
                                 </strong></span>
                             </div>
