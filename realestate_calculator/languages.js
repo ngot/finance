@@ -94,7 +94,7 @@ const translations = {
         annual_cash_flow: "Average Annual Cash Flow",
         capital_growth: "Total Capital Growth",
         total_rental_income: "Total Rental Income",
-        total_tax_benefits: "Total Tax Benefits",
+        total_tax_benefits: "Negative Gearing",
         gross_rental_yield: "Gross Rental Yield",
         net_rental_yield: "Net Rental Yield",
         
@@ -116,8 +116,8 @@ const translations = {
         cash_flow: "Cash Flow (AUD)",
         
         // Modal Content
-        tax_benefits_detailed_analysis: "Tax Benefits Detailed Analysis",
-        total_tax_benefits_amount: "Total Tax Benefits Amount",
+        tax_benefits_detailed_analysis: "Negative Gearing Detailed Analysis",
+        total_tax_benefits_amount: "Negative Gearing Amount",
         benefit_years: "Benefit Years",
         marginal_tax_rate: "Marginal Tax Rate",
         yearly_details: "Annual Details",
@@ -434,7 +434,7 @@ const translations = {
         annual_cash_flow: "平均年度现金流",
         capital_growth: "总资本增值",
         total_rental_income: "累计租金收入",
-        total_tax_benefits: "累计税务优惠",
+        total_tax_benefits: "负扣税",
         gross_rental_yield: "毛租金收益率",
         net_rental_yield: "净租金收益率",
         
@@ -456,8 +456,8 @@ const translations = {
         cash_flow: "现金流 (AUD)",
         
         // Modal Content
-        tax_benefits_detailed_analysis: "税务优惠详细分析",
-        total_tax_benefits_amount: "累计税务优惠总额",
+        tax_benefits_detailed_analysis: "负扣税详细分析",
+        total_tax_benefits_amount: "负扣税总额",
         benefit_years: "受益年数",
         marginal_tax_rate: "边际税率",
         yearly_details: "年度明细",
