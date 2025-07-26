@@ -24,6 +24,7 @@ body {
     position: relative;
 }
 
+
 .language-switcher {
     position: absolute;
     top: 20px;
@@ -46,10 +47,78 @@ body {
     color: white;
 }
 
-.header h1 {
-    font-size: 3.5rem;
+.main-logo {
+    margin-bottom: 30px;
+}
+
+.main-logo .finance-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: transparent;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.main-logo .finance-logo:hover {
+    transform: scale(1.02);
+}
+
+.main-logo .icon-container {
+    display: flex;
+    align-items: flex-end;
     margin-bottom: 20px;
-    font-weight: 700;
+    height: 100px;
+}
+
+.main-logo .dollar-sign {
+    color: #2d7a5f;
+    font-size: 60px;
+    font-weight: bold;
+    margin-right: 10px;
+    align-self: flex-start;
+}
+
+.main-logo .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    margin-right: 12px;
+}
+
+.main-logo .bar {
+    background-color: #2d7a5f;
+    margin-right: 5px;
+    border-radius: 3px 3px 0 0;
+}
+
+.main-logo .bar1 { width: 15px; height: 40px; }
+.main-logo .bar2 { width: 15px; height: 60px; }
+.main-logo .bar3 { width: 15px; height: 85px; }
+
+.main-logo .wrench {
+    color: #2d7a5f;
+    font-size: 50px;
+    transform: rotate(-45deg);
+    margin-left: 8px;
+}
+
+.main-logo .australia {
+    color: #fff;
+    font-size: 60px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.main-logo .finance-tools {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: 6px;
+    margin: 8px 0 0 0;
+    line-height: 1;
     text-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
@@ -218,9 +287,32 @@ body {
         padding: 40px 20px;
     }
 
-    .header h1 {
-        font-size: 2.5rem;
+    .main-logo .australia {
+        font-size: 45px;
+        letter-spacing: 2px;
     }
+    
+    .main-logo .finance-tools {
+        font-size: 30px;
+        letter-spacing: 4px;
+    }
+    
+    .main-logo .icon-container {
+        height: 75px;
+        margin-bottom: 15px;
+    }
+    
+    .main-logo .dollar-sign {
+        font-size: 45px;
+    }
+    
+    .main-logo .wrench {
+        font-size: 38px;
+    }
+    
+    .main-logo .bar1 { width: 12px; height: 30px; }
+    .main-logo .bar2 { width: 12px; height: 45px; }
+    .main-logo .bar3 { width: 12px; height: 64px; }
 
     .header p {
         font-size: 1.1rem;
@@ -254,12 +346,36 @@ body {
         right: 0;
         margin-bottom: 20px;
     }
+
 }
 
 @media (max-width: 480px) {
-    .header h1 {
-        font-size: 2rem;
+    .main-logo .australia {
+        font-size: 32px;
+        letter-spacing: 1px;
     }
+    
+    .main-logo .finance-tools {
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+    
+    .main-logo .icon-container {
+        height: 55px;
+        margin-bottom: 12px;
+    }
+    
+    .main-logo .dollar-sign {
+        font-size: 32px;
+    }
+    
+    .main-logo .wrench {
+        font-size: 26px;
+    }
+    
+    .main-logo .bar1 { width: 8px; height: 20px; }
+    .main-logo .bar2 { width: 8px; height: 30px; }
+    .main-logo .bar3 { width: 8px; height: 42px; }
 
     .tool-card {
         padding: 25px;
@@ -268,4 +384,5 @@ body {
     .tool-icon {
         font-size: 2.5rem;
     }
+
 }
