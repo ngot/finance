@@ -101,12 +101,36 @@ let currentLanguage = 'en';
 
 // 初始化多语言功能
 function initializeI18n() {
-    const languageSelector = document.getElementById('languageSelector');
-    languageSelector.addEventListener('change', function(e) {
-        currentLanguage = e.target.value;
+    const langEn = document.getElementById('langEn');
+    const langZh = document.getElementById('langZh');
+    
+    langEn.addEventListener('click', function() {
+        currentLanguage = 'en';
         updateLanguage();
-        document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
+        updateActiveButton();
+        document.documentElement.lang = 'en';
     });
+    
+    langZh.addEventListener('click', function() {
+        currentLanguage = 'zh';
+        updateLanguage();
+        updateActiveButton();
+        document.documentElement.lang = 'zh-CN';
+    });
+}
+
+// 更新活动按钮状态
+function updateActiveButton() {
+    const langEn = document.getElementById('langEn');
+    const langZh = document.getElementById('langZh');
+    
+    if (currentLanguage === 'en') {
+        langEn.classList.add('active');
+        langZh.classList.remove('active');
+    } else {
+        langZh.classList.add('active');
+        langEn.classList.remove('active');
+    }
 }
 
 // 更新页面语言
