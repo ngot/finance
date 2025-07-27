@@ -1,7 +1,7 @@
 // 多语言翻译数据
 const translations = {
     zh: {
-        'page-title': '金融工具箱 - Finance Tools',
+        'page-title': '⚒️澳洲金融工具箱 - Finance Tools',
         'main-title': '🏦 金融工具箱',
         'main-subtitle': '专业的澳洲投资理财计算工具集合，帮助您做出明智的财务决策',
         'tools-title': '🛠️ 可用工具',
@@ -48,7 +48,7 @@ const translations = {
         'footer-copyright': '© 2025 Finance Tools. 专为澳洲投资者设计。'
     },
     en: {
-        'page-title': 'Finance Tools - Australian Investment Calculators',
+        'page-title': '⚒️Australian Finance Tools',
         'main-title': '🏦 Finance Tools',
         'main-subtitle': 'Professional Australian investment and financial planning calculator suite to help you make informed financial decisions',
         'tools-title': '🛠️ Available Tools',
